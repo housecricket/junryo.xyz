@@ -1,5 +1,5 @@
 ---
-title: Things to Know about The Top 1 and Top 5 Accuracy
+title: Top 10 CNN Architectures Every Machine Learning Engineer Should Know
 date: '2021-01-07'
 author: 'Dang Trung Anh'
 tags: ['Towards Data Science', 'Data Science']

@@ -1,5 +1,5 @@
 ---
-title: Top 10 CNN Architectures Every Machine Learning Engineer Should Know
+title: Things to Know about The Top 1 and Top 5 Accuracy 
 date: '2021-01-05'
 author: 'Dang Trung Anh'
 tags: ['CNN', 'Towards Data Science', 'Deep Learning', 'Data Science']
