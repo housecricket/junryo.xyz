@@ -13,7 +13,7 @@ export default function Subscribe() {
   const inputEl = useRef(null);
   const { data } = useSWR('/api/subscribers', fetcher);
   // const subscriberCount = new Number(data?.count);
-  const subscriberCount = new Number(1259);
+  const subscriberCount = new Number(1304);
 
 
   const subscribe = async (e) => {
@@ -83,7 +83,7 @@ export default function Subscribe() {
             subscriberCount > 0 ? subscriberCount.toLocaleString() : '-'
           } subscribers – `}
           <Link href="/newsletter">
-            <a>7 issues</a>
+            <a>8 issues</a>
           </Link>
         </p>
       )}
