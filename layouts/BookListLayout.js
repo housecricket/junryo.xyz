@@ -51,7 +51,7 @@ export default function BookListLayout({ posts, title }) {
               <li key={slug} className="py-4">
                 <div className="space-y-2 xl:grid xl:grid-cols-4 xl:space-y-0 xl:items-stretch">
                   <dl>
-                      <img src={img} className="object-center h-48 w-96"></img>
+                      <img src={img} className="object-center h-48 w-72"></img>
                     {/* <dt className="sr-only">Published on</dt>
                     <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                       <time dateTime={published}>
