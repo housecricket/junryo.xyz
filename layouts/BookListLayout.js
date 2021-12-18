@@ -19,6 +19,10 @@ export default function BookListLayout({ posts, title }) {
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             {title}
           </h1>
+          <h2 className="italic">
+            If you would like to get a copy, please do not hesitate to 
+            <a href="https://www.linkedin.com/in/dangtrunganh"> contact me</a>!
+          </h2>
           <div className="relative max-w-lg">
             <input
               aria-label="Search books"
@@ -51,7 +55,7 @@ export default function BookListLayout({ posts, title }) {
               <li key={slug} className="py-4">
                 <div className="space-y-2 xl:grid xl:grid-cols-4 xl:space-y-0 xl:items-stretch">
                   <dl>
-                      <img src={img} className="object-center h-48 w-72"></img>
+                    <img src={img} className="object-center h-48 w-72"></img>
                     {/* <dt className="sr-only">Published on</dt>
                     <dd className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                       <time dateTime={published}>

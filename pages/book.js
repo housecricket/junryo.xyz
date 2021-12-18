@@ -19,7 +19,7 @@ export default function Book({ posts }) {
                 description={siteMetadata.description}
                 url={`${siteMetadata.siteUrl}/book`}
             />
-            <BookListLayout posts={posts} title="All Books" />
+            <BookListLayout posts={posts} title="All Books I Have Read" />
         </>
     )
 }
