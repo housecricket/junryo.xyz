@@ -49,10 +49,10 @@ export default function Subscribe() {
 
   return (
     <div className="border border-blue-200 rounded p-6 my-4 w-full dark:border-gray-800 bg-blue-50 dark:bg-blue-opaque">
-      <p className="text-lg md:text-xl font-bold text-gray-900 dark:text-gray-100">
+      <p className="text-lg md:text-xl font-bold text-gray-900 dark:text-gray-500">
         Subscribe to the newsletter
       </p>
-      <p className="my-1 text-gray-800 dark:text-gray-200">
+      <p className="my-1 text-gray-800 dark:text-gray-500">
         Get emails from me about web development, tech, and early access to new
         articles.
       </p>
@@ -78,7 +78,7 @@ export default function Subscribe() {
       ) : form.state === 'success' ? (
         <SuccessMessage>{form.message}</SuccessMessage>
       ) : (
-        <p className="text-sm text-gray-800 dark:text-gray-200">
+        <p className="text-sm text-gray-800 dark:text-gray-500">
           {`${
             subscriberCount > 0 ? subscriberCount.toLocaleString() : '-'
           } subscribers – `}
