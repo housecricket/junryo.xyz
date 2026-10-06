@@ -1,7 +1,10 @@
 import { AMAZON_URL, LINKEDIN_URL, RELEASED, content, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
 import Link from "next/link";
-import { AVAILABLE, chapterPath, type ReadLang } from "@/lib/chapters";
+import { AVAILABLE, chapterPath, loadChapter, type ReadLang } from "@/lib/chapters";
+import { UI } from "@/lib/ui";
+import Countdown from "./Countdown";
+import { ReadMarks } from "./ReadingAids";
 import Html from "./Html";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
@@ -29,7 +32,11 @@ function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | nul
 
 export default function BookPage({ lang }: { lang: Lang }) {
   const c = content[lang];
+  const x = UI[lang];
   let n = 0;
+  // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
+  const upcoming = RELEASED < 14 ? RELEASED + 1 : null;
+  const upHook = lang === "vi" && upcoming ? loadChapter("vi", RELEASED).teaser?.hook ?? "" : "";
 
   return (
     <>
@@ -59,6 +66,27 @@ export default function BookPage({ lang }: { lang: Lang }) {
           </figure>
         </div>
       </header>
+
+      {/* Chương sắp ra + đếm ngược */}
+      {upcoming && (
+        <section className="next-strip">
+          <div className="wrap in">
+            <div className="ns-t">
+              <span className="eyebrow">{x.weekK}</span>
+              <span className="ns-title">
+                {x.chapter} {upcoming} · {c.c[upcoming - 1]}
+              </span>
+              {upHook && <span className="ns-hook" dangerouslySetInnerHTML={{ __html: upHook }} />}
+            </div>
+            <div className="ns-a">
+              <Countdown lang={lang} />
+              <a className="btn primary" href={LINKEDIN_URL} {...ext}>
+                {c.sub} <ArrowIcon />
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Lưới 90/10 */}
       <div className="band">
@@ -168,7 +196,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
                     const out = i < RELEASED;
                     const target = out ? readTarget(lang, i + 1) : null;
                     return (
-                      <li key={i} className={out ? "out" : undefined}>
+                      <li key={i} className={out ? "out" : undefined} data-ch={i + 1}>
                         <span className="n">{String(i + 1).padStart(2, "0")}</span>
                         <span className="t">
                           {target ? (
@@ -196,6 +224,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
             ))}
           </div>
           <Html as="p" className="ending" html={c.ending} />
+          <ReadMarks label={x.read} />
         </div>
       </section>
 

@@ -30,7 +30,32 @@ export function pdfUrl(lang: ReadLang, n: number) {
   return f ? `${BASE_PATH}/pdf/${f}` : null;
 }
 
-export type Chapter = { n: number; title: string; html: string };
+export type Teaser = { n: number; title: string; hook: string; desc: string };
+export type Chapter = { n: number; title: string; html: string; teaser: Teaser | null; quotes: string[] };
+
+const inline = (s: string) => marked.parseInline(s, { async: false }) as string;
+
+/** Đọc phần "Tuần sau" cuối chương: tên chương kế, câu mồi, đoạn mô tả */
+function parseTeaser(md: string): Teaser | null {
+  const m = md.match(/\n## (?:Tuần sau|Next Week)\n([\s\S]*)$/);
+  if (!m) return null;
+  const parts = m[1].split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+  const head = parts[0]?.match(/^\*\*(?:Chương|Chapter) (\d+) [–-] (.+)\*\*$/);
+  if (!head) return null;
+  const rest = parts.slice(1).filter((p) => !p.startsWith("**")); // bỏ đoạn kêu gọi LinkedIn/Amazon
+  return {
+    n: Number(head[1]),
+    title: head[2],
+    hook: rest[0] ? inline(rest[0].replace(/^\*(.+)\*$/, "$1")) : "",
+    desc: rest[1] ? inline(rest[1]) : "",
+  };
+}
+
+/** Các câu in đậm trong "Sổ tay của Thắng Tất" → câu đáng nhớ để chia sẻ */
+function parseQuotes(md: string): string[] {
+  const nb = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook)/)[1] ?? "";
+  return [...nb.matchAll(/^\d+\. \*\*(.+?)\*\*/gm)].map((m) => m[1]);
+}
 
 export function loadChapter(lang: ReadLang, n: number): Chapter {
   const file = path.join(process.cwd(), "content", "chapters", lang, `${n}.md`);
@@ -39,6 +64,8 @@ export function loadChapter(lang: ReadLang, n: number): Chapter {
   // Tiêu đề "# Chương 1 – Chỗ đau" → lấy phần sau dấu gạch
   const h1 = md.match(/^# (.+)$/m)?.[1] ?? "";
   const title = h1.split(/\s+[–-]\s+/).slice(1).join(" – ") || h1;
+  const teaser = parseTeaser(md);
+  const quotes = parseQuotes(md);
 
   md = md
     .replace(/^# .+\n+/m, "") // bỏ tiêu đề, trang tự hiển thị
@@ -51,5 +78,5 @@ export function loadChapter(lang: ReadLang, n: number): Chapter {
     .replace(/<blockquote>/g, '<blockquote class="box">')
     .replace(/<p><img src="([^"]+)" alt="([^"]*)"><\/p>/g, '<figure><img src="$1" alt="$2" loading="lazy"><figcaption>$2</figcaption></figure>');
 
-  return { n, title, html };
+  return { n, title, html, teaser, quotes };
 }

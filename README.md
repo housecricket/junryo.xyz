@@ -42,7 +42,7 @@ NEXT_PUBLIC_SITE_URL=https://ten-mien-cua-ban.com npm run build
 
 ## Đưa lên GitHub và tự xuất bản bằng GitHub Pages
 
-Thư mục này đã là một repo git, có sẵn một commit đầu tiên trên nhánh `main`.
+Thư mục này đã là một repo git, có sẵn một commit đầu tiên trên nhánh `master`.
 
 1. Vào github.com → **New repository**, đặt tên (vd `muoi-phan-tram`), **không** tích thêm README hay .gitignore.
 2. Trong thư mục dự án, chạy:
@@ -56,7 +56,7 @@ Thư mục này đã là một repo git, có sẵn một commit đầu tiên tr�
 4. Mở tab **Actions** để xem quá trình build. Khoảng 1–2 phút sau trang có ở
    `https://<tên-github-của-bạn>.github.io/muoi-phan-tram/`.
 
-Từ đó, mỗi lần sửa và `git push` lên `main`, trang tự cập nhật.
+Từ đó, mỗi lần sửa và `git push` lên `master`, trang tự cập nhật.
 
 **Dùng tên miền riêng:** vào Settings → Pages → Custom domain, nhập tên miền, rồi xoá dòng
 `NEXT_PUBLIC_BASE_PATH` trong `.github/workflows/deploy.yml` và đặt `NEXT_PUBLIC_SITE_URL` thành tên miền đó.
@@ -70,7 +70,7 @@ Từ đó, mỗi lần sửa và `git push` lên `main`, trang tự cập nhật
 | `.editorconfig` | Thống nhất thụt lề 2 dấu cách, UTF-8 trong mọi trình soạn thảo |
 | `.nvmrc` | Phiên bản Node.js (20) dùng cho máy bạn và GitHub Actions |
 | `.env.example` | Mẫu biến môi trường, sao chép thành `.env.local` khi cần |
-| `.github/workflows/deploy.yml` | Tự build và xuất bản lên GitHub Pages khi push lên `main` |
+| `.github/workflows/deploy.yml` | Tự build và xuất bản lên GitHub Pages khi push lên `master` |
 | `public/.nojekyll` | Cho GitHub Pages phục vụ đúng thư mục `_next/` của Next.js |
 
 ## Thêm một chương mới
@@ -83,6 +83,18 @@ Từ đó, mỗi lần sửa và `git push` lên `main`, trang tự cập nhật
 6. `git add -A && git commit -m "Chương 5" && git push` → trang tự cập nhật.
 
 Bản dịch tiếng Anh làm tương tự trong `content/chapters/en/` và `AVAILABLE.en`.
+
+## Những phần giữ chân người đọc
+
+| Phần | Lấy dữ liệu từ đâu | Sửa ở đâu |
+|---|---|---|
+| Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định thứ Hai 8:00 giờ Việt Nam) |
+| Thẻ "Tuần sau" cuối chương | Phần `## Tuần sau` cuối mỗi file chương | Viết trong file `.md` của chương |
+| Câu đáng nhớ + nút chia sẻ LinkedIn | Các câu in đậm trong `## Sổ tay của Thắng Tất` | Viết trong file `.md` của chương |
+| Thanh mời đăng ký khi đọc quá nửa chương, thanh tiến độ | Tự động | `components/ReadingAids.tsx` |
+| Dấu ✓ chương đã đọc trong mục lục | Lưu trong trình duyệt người đọc | Tự động |
+
+Nhớ viết phần `## Tuần sau` cho chương mới nhất trước khi đăng: đó là trailer mà người đọc thấy ngay khi đọc xong.
 
 ## Sửa nội dung thường gặp
 
