@@ -20,6 +20,11 @@ export const UI = {
     close: "Đóng",
     read: "Đã đọc",
     chapter: "Chương",
+    legendNative: "Đọc được ngay",
+    legendAlt: "",
+    altNote: (_l: string) => "",
+    weekAlt: "Tuần sau",
+    status: (_native: number, _released: number) => "",
   },
   en: {
     nextK: "Next chapter",
@@ -36,6 +41,12 @@ export const UI = {
     close: "Close",
     read: "Read",
     chapter: "Chapter",
+    legendNative: "Read in English",
+    legendAlt: "Vietnamese original · translation on the way",
+    altNote: (_l: string) => "Vietnamese original · English translation on the way",
+    weekAlt: "Next week · Vietnamese original",
+    status: (native: number, released: number) =>
+      `${native} of ${released} published chapters ${native === 1 ? "is" : "are"} in English so far. Translations follow the Vietnamese originals.`,
   },
   es: {
     nextK: "Siguiente capítulo",
@@ -52,5 +63,12 @@ export const UI = {
     close: "Cerrar",
     read: "Leído",
     chapter: "Capítulo",
+    legendNative: "Leer en español",
+    legendAlt: "Aún sin traducir al español",
+    altNote: (l: string) =>
+      l === "en" ? "Disponible en inglés · traducción al español en curso" : "Solo en vietnamita · traducción en curso",
+    weekAlt: "Próxima semana · original en vietnamita",
+    status: (_native: number, released: number) =>
+      `Aún no hay capítulos en español. El capítulo 1 está en inglés y los capítulos 2 a ${released}, en vietnamita.`,
   },
 } satisfies Record<Lang, unknown>;

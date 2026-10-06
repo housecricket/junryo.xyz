@@ -49,7 +49,7 @@ Thư mục này đã là một repo git, có sẵn một commit đầu tiên tr�
 
    ```bash
    git remote add origin https://github.com/<tên-github-của-bạn>/muoi-phan-tram.git
-   git push -u origin main
+   git push -u origin master
    ```
 
 3. Trên GitHub, vào **Settings → Pages → Build and deployment → Source**, chọn **GitHub Actions**.

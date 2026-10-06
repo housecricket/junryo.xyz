@@ -6,6 +6,7 @@ import { UI as UIX } from "@/lib/ui";
 import Countdown from "./Countdown";
 import Quotes from "./Quotes";
 import ReadingAids from "./ReadingAids";
+import TranslationNotice from "./TranslationNotice";
 import { ArrowIcon } from "./Icons";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
@@ -60,6 +61,8 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
           {c.title}
         </Link>
       </nav>
+
+      {lang === "vi" && <TranslationNotice />}
 
       <header className="reader-head wrap">
         <div className="eyebrow">{c[partOf(chapter.n)]}</div>

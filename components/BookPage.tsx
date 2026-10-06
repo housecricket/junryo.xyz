@@ -37,6 +37,9 @@ export default function BookPage({ lang }: { lang: Lang }) {
   // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
   const upcoming = RELEASED < 14 ? RELEASED + 1 : null;
   const upHook = lang === "vi" && upcoming ? loadChapter("vi", RELEASED).teaser?.hook ?? "" : "";
+  // Bản tiếng Anh / Tây Ban Nha: bao nhiêu chương đã có bằng chính ngôn ngữ này
+  const nativeCount = lang === "vi" ? RELEASED : lang === "en" ? AVAILABLE.en.filter((k) => k <= RELEASED).length : 0;
+  const translated = lang === "vi";
 
   return (
     <>
@@ -72,11 +75,12 @@ export default function BookPage({ lang }: { lang: Lang }) {
         <section className="next-strip">
           <div className="wrap in">
             <div className="ns-t">
-              <span className="eyebrow">{x.weekK}</span>
+              <span className="eyebrow">{translated ? x.weekK : x.weekAlt}</span>
               <span className="ns-title">
                 {x.chapter} {upcoming} · {c.c[upcoming - 1]}
               </span>
               {upHook && <span className="ns-hook" dangerouslySetInnerHTML={{ __html: upHook }} />}
+              {!translated && <span className="ns-hook">{x.status(nativeCount, RELEASED)}</span>}
             </div>
             <div className="ns-a">
               <Countdown lang={lang} />
@@ -176,10 +180,18 @@ export default function BookPage({ lang }: { lang: Lang }) {
             <Html as="h2" html={c.toc_h} />
           </div>
           <div className="legend">
-            <span>
-              <OpenBookIcon style={{ width: "1.15rem", height: "1.15rem", color: "var(--ink)" }} />
-              {c.ready}
-            </span>
+            {nativeCount > 0 && (
+              <span>
+                <OpenBookIcon style={{ width: "1.15rem", height: "1.15rem", color: "var(--ink)" }} />
+                {translated ? c.ready : x.legendNative}
+              </span>
+            )}
+            {!translated && (
+              <span>
+                <i className="dot half" />
+                {x.legendAlt}
+              </span>
+            )}
             <span>
               <i className="dot o" />
               {c.soon}
@@ -195,19 +207,22 @@ export default function BookPage({ lang }: { lang: Lang }) {
                     const ch = chapter(c, i);
                     const out = i < RELEASED;
                     const target = out ? readTarget(lang, i + 1) : null;
+                    const alt = !!target && target.in !== lang; // chưa dịch sang ngôn ngữ đang xem
+                    const href = target ? (alt ? `${target.href}#from-${lang}` : target.href) : "";
                     return (
-                      <li key={i} className={out ? "out" : undefined} data-ch={i + 1}>
+                      <li key={i} className={out ? (alt ? "out alt" : "out") : undefined} data-ch={i + 1}>
                         <span className="n">{String(i + 1).padStart(2, "0")}</span>
                         <span className="t">
                           {target ? (
-                            <Link href={target.href} className="tl">
+                            <Link href={href} className="tl" hrefLang={target.in}>
                               <Html html={ch.title} />
-                              <span className="rd" title={c.ready}>
-                                <OpenBookIcon />
-                              </span>
-                              {target.in !== lang && (
+                              {alt ? (
                                 <span className="in-lang" title={c.other_lang[target.in]}>
                                   <Flag lang={target.in} />
+                                </span>
+                              ) : (
+                                <span className="rd" title={c.ready}>
+                                  <OpenBookIcon />
                                 </span>
                               )}
                             </Link>
@@ -215,6 +230,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
                             <Html html={ch.title} />
                           )}
                         </span>
+                        {alt && target && <span className="alt-note">{x.altNote(target.in)}</span>}
                         <Html className="th" html={ch.theory} />
                       </li>
                     );

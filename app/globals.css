@@ -289,3 +289,15 @@ footer.reader-foot{padding-top:2.4rem}
 /* Mục lục: chương đã đọc */
 .part li.is-read .n{font-size:0}
 .part li.is-read .n::after{content:"✓";font-size:.8rem}
+
+/* Chương chưa dịch sang ngôn ngữ đang xem (bản EN/ES) */
+.legend .dot.half{width:.9rem;height:.9rem;border-radius:50%;border:1px dashed var(--ink);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 4px)}
+.part li.out.alt .n{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 5px);color:var(--ink);border:1px dashed var(--ink)}
+.part li.out.alt .t{color:var(--muted)}
+.part li.out.alt .tl{color:var(--muted)}
+.alt-note{grid-column:2;font-family:var(--sans);font-size:.72rem;font-style:italic;color:var(--muted);line-height:1.4}
+.translation-note{max-width:calc(var(--measure) + 2*clamp(16px,4vw,40px));margin-top:1.2rem}
+.translation-note .in{border:1px solid var(--ink);padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;font-family:var(--sans);font-size:.88rem;line-height:1.5}
+.translation-note .flag{width:1.4rem;height:.93rem;opacity:1}
+.translation-note p{margin:0;flex:1 1 18rem}
+.translation-note a{color:var(--ink);font-weight:600;text-underline-offset:.2em}
