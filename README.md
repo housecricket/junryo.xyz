@@ -7,6 +7,11 @@ Trang giới thiệu sách ba ngôn ngữ, xuất ra web tĩnh:
 | `/` | Tiếng Việt | `public/covers/vi.jpg` |
 | `/en/` | English | `public/covers/en.jpg` |
 | `/es/` | Español | `public/covers/en.jpg` (dùng chung bìa tiếng Anh) |
+| `/chuong/1/` … `/chuong/4/` | Đọc chương tiếng Việt | kèm nút tải PDF |
+| `/en/chapter/1/` | Đọc chương 1 tiếng Anh | kèm nút tải PDF |
+
+Bấm vào chương đã ra trong mục lục sẽ mở trang đọc. Ở bản tiếng Anh và Tây Ban Nha, chương chưa dịch
+sẽ mở bản tiếng Việt (có lá cờ nhỏ bên cạnh tên chương để báo trước).
 
 ## Chạy thử trên máy
 
@@ -67,6 +72,17 @@ Từ đó, mỗi lần sửa và `git push` lên `main`, trang tự cập nhật
 | `.env.example` | Mẫu biến môi trường, sao chép thành `.env.local` khi cần |
 | `.github/workflows/deploy.yml` | Tự build và xuất bản lên GitHub Pages khi push lên `main` |
 | `public/.nojekyll` | Cho GitHub Pages phục vụ đúng thư mục `_next/` của Next.js |
+
+## Thêm một chương mới
+
+1. Đặt file Markdown vào `content/chapters/vi/5.md` (dòng đầu dạng `# Chương 5 – Tên chương`).
+2. Ảnh minh hoạ đặt vào `public/illus/` và gọi trong bài bằng `![Chú thích](Minh_hoa_Ch5_Ten.jpg)`.
+3. PDF đặt vào `public/pdf/chuong-5.pdf`.
+4. Trong `lib/chapters.ts`: thêm `5` vào `AVAILABLE.vi` và `5: "chuong-5.pdf"` vào `PDF_FILES.vi`.
+5. Trong `lib/content.ts`: đổi `RELEASED` thành `5`.
+6. `git add -A && git commit -m "Chương 5" && git push` → trang tự cập nhật.
+
+Bản dịch tiếng Anh làm tương tự trong `content/chapters/en/` và `AVAILABLE.en`.
 
 ## Sửa nội dung thường gặp
 

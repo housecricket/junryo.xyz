@@ -1,9 +1,11 @@
 import { AMAZON_URL, LINKEDIN_URL, RELEASED, content, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
+import Link from "next/link";
+import { AVAILABLE, chapterPath, type ReadLang } from "@/lib/chapters";
 import Html from "./Html";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
-import { ArrowIcon, BookIcon, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
+import { ArrowIcon, BookIcon, Flag, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -16,6 +18,13 @@ const PARTS = [
 
 function chapter(c: Content, i: number) {
   return { title: c.c[i], theory: c.th[i] };
+}
+
+/** Chương n mở bằng ngôn ngữ nào: ưu tiên ngôn ngữ đang xem, rồi tiếng Anh, rồi tiếng Việt */
+function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | null {
+  const order: ReadLang[] = lang === "vi" ? ["vi"] : lang === "en" ? ["en", "vi"] : ["en", "vi"];
+  for (const l of order) if (AVAILABLE[l].includes(n)) return { href: chapterPath(l, n), in: l };
+  return null;
 }
 
 export default function BookPage({ lang }: { lang: Lang }) {
@@ -157,15 +166,25 @@ export default function BookPage({ lang }: { lang: Lang }) {
                     const i = n++;
                     const ch = chapter(c, i);
                     const out = i < RELEASED;
+                    const target = out ? readTarget(lang, i + 1) : null;
                     return (
                       <li key={i} className={out ? "out" : undefined}>
                         <span className="n">{String(i + 1).padStart(2, "0")}</span>
                         <span className="t">
-                          <Html html={ch.title} />
-                          {out && (
-                            <span className="rd" title={c.ready}>
-                              <OpenBookIcon />
-                            </span>
+                          {target ? (
+                            <Link href={target.href} className="tl">
+                              <Html html={ch.title} />
+                              <span className="rd" title={c.ready}>
+                                <OpenBookIcon />
+                              </span>
+                              {target.in !== lang && (
+                                <span className="in-lang" title={c.other_lang[target.in]}>
+                                  <Flag lang={target.in} />
+                                </span>
+                              )}
+                            </Link>
+                          ) : (
+                            <Html html={ch.title} />
                           )}
                         </span>
                         <Html className="th" html={ch.theory} />
@@ -195,11 +214,11 @@ export default function BookPage({ lang }: { lang: Lang }) {
             <div className="more">
               <p>{c.ex_more}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: ".8rem", justifyContent: "center" }}>
-                <a className="btn primary" href={AMAZON_URL} {...ext}>
+                <Link className="btn primary" href={readTarget(lang, 1)!.href}>
+                  {c.cont}
+                </Link>
+                <a className="btn ghost" href={AMAZON_URL} {...ext}>
                   {c.full}
-                </a>
-                <a className="btn ghost" href={LINKEDIN_URL} {...ext}>
-                  {c.sub}
                 </a>
               </div>
             </div>

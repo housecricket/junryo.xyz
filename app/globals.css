@@ -181,3 +181,51 @@ footer .wrap{border-top:1px solid var(--band-line);padding-top:1.4rem;display:fl
 .face .bl.thin{stroke-width:1.3}
 .face .ring{fill:none;stroke:#0B0B0B;stroke-width:2}
 .person .face{margin-bottom:.4rem}
+
+/* Mục lục: chương đọc được là link */
+.part .tl{color:inherit;text-decoration:none;display:inline}
+.part .tl:hover > span:first-child{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:1px}
+.part .tl:focus-visible{outline:2px solid var(--muted);outline-offset:3px}
+.in-lang{display:inline-flex;vertical-align:-.1em;margin-left:.4rem}
+.in-lang .flag{width:1.05rem;height:.7rem;opacity:.9}
+
+/* Trang đọc chương */
+.reader-bar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-block:1.2rem;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:.85rem}
+.reader-bar a{color:var(--ink);text-decoration:none}
+.reader-bar .back{font-weight:600}
+.reader-bar .brand{font-family:var(--display);font-weight:700;font-size:1rem}
+.reader-bar a:hover{text-decoration:underline;text-underline-offset:.2em}
+.reader-head{max-width:calc(var(--measure) + 2*clamp(16px,4vw,40px));padding-block:clamp(40px,7vw,80px) 1.5rem;display:flex;flex-direction:column;align-items:flex-start;gap:.6rem}
+.reader-head .chap-n{font-family:var(--sans);font-size:.8rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:1rem}
+.reader-head h1{font-family:var(--display);font-weight:900;font-size:clamp(2.6rem,7vw,4.4rem);line-height:1.02;letter-spacing:-.02em;color:var(--ink)}
+.reader-head .rule{width:3.2rem;height:4px;background:var(--ink);margin:.8rem 0 .6rem}
+.reader-head .pdf{font-size:.85rem;padding:.6em 1em}
+.reader{max-width:calc(var(--measure) + 2*clamp(16px,4vw,40px));padding-block:1rem 3rem;font-size:1.12rem;line-height:1.8}
+.reader > *{margin:0 0 1.15rem}
+.reader h2{font-family:var(--display);font-size:clamp(1.5rem,3vw,1.9rem);line-height:1.2;margin:3rem 0 1.2rem;color:var(--ink)}
+.reader h3{font-family:var(--sans);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;margin:2.2rem 0 1rem;color:var(--ink)}
+.reader > h2:first-child{margin-top:1rem}
+.reader figure{margin:2.2rem 0}
+.reader figure img{display:block;width:100%;height:auto;filter:grayscale(1)}
+.reader figcaption{font-family:var(--sans);font-size:.8rem;color:var(--muted);text-align:center;margin-top:.6rem}
+.reader blockquote.box{margin:2.2rem 0;padding:1.4rem 1.5rem;background:var(--paper);border-left:4px solid var(--ink);font-size:1rem;line-height:1.7}
+.reader blockquote.box p{margin:0 0 .9rem}
+.reader blockquote.box p:last-child{margin:0}
+.reader blockquote.box p:first-child strong{font-family:var(--sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase}
+.reader ol,.reader ul{padding-left:1.3rem}
+.reader li{margin:.5rem 0}
+.reader hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0 1.2rem}
+.reader hr + p{font-size:.85rem;color:var(--muted);line-height:1.6}
+.reader a{color:inherit;text-underline-offset:.2em}
+.pager{max-width:calc(var(--measure) + 2*clamp(16px,4vw,40px));display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;padding-block:1rem clamp(48px,7vw,80px)}
+.pg{display:flex;flex-direction:column;gap:.35rem;padding:1.1rem 1.2rem;border:1px solid var(--line);text-decoration:none;color:var(--ink);min-width:0}
+.pg.next{text-align:right;grid-column:2}
+.pg .k{font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.pg .v{font-family:var(--display);font-weight:700;font-size:1.1rem;line-height:1.3}
+a.pg:hover{border-color:var(--ink)}
+a.pg:focus-visible{outline:2px solid var(--muted);outline-offset:2px}
+.pg.soon{grid-column:1 / -1;background:var(--paper)}
+.pg.soon p{font-size:.95rem;color:var(--muted);margin:.3rem 0 .6rem}
+.pg.soon .row{display:flex;flex-wrap:wrap;gap:.7rem}
+footer.reader-foot{padding-top:2.4rem}
+@media (max-width:640px){.pager{grid-template-columns:minmax(0,1fr)}.pg.next{grid-column:1;text-align:left}.reader-bar .brand{display:none}}

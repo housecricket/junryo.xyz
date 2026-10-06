@@ -9,6 +9,8 @@ export const RELEASED = 4; // số chương đã ra: tăng lên mỗi khi có ch
 
 export const content = {
   "vi": {
+    "cont": "Đọc tiếp chương 1",
+    "other_lang": {"en":"Mở bản tiếng Anh","vi":"Mở bản tiếng Việt"},
     "title": "Mười phần trăm còn lại",
     "eyebrow": "Truyện quản trị · Mỗi tuần một chương",
     "h1": "Mười phần trăm <em>còn lại</em>",
@@ -108,6 +110,8 @@ export const content = {
     ]
   },
   "en": {
+    "cont": "Keep reading Chapter 1",
+    "other_lang": {"en":"Opens in English","vi":"Opens in Vietnamese (not yet translated)"},
     "title": "The Last 10%",
     "eyebrow": "A management novel · One chapter a week",
     "h1": "The Last <em>10%</em>",
@@ -207,6 +211,8 @@ export const content = {
     ]
   },
   "es": {
+    "cont": "Seguir leyendo (en inglés)",
+    "other_lang": {"en":"Se abre en inglés","vi":"Se abre en vietnamita (aún sin traducir)"},
     "title": "El último 10 %",
     "eyebrow": "Novela de management · Un capítulo por semana",
     "h1": "El último <em>10 %</em>",
