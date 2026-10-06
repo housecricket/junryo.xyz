@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AMAZON_URL, LINKEDIN_URL, content } from "@/lib/content";
 import { AVAILABLE, chapterPath, draftNumber, loadChapter, pdfUrl, type Chapter, type ReadLang } from "@/lib/chapters";
-import WritingStatus, { ProgressMeter } from "./WritingStatus";
+import { ProgressMeter } from "./WritingStatus";
 import { PATHS, SITE_URL } from "@/lib/site";
 import { UI as UIX } from "@/lib/ui";
 import Countdown from "./Countdown";
@@ -85,7 +85,6 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         <div className="rule" aria-hidden="true" />
         {isDraft && chapter.draft && (
           <>
-            <WritingStatus lang={lang} percent={chapter.draft.percent} words={chapter.draft.words} total={chapter.draft.total} />
             <p className="draft-note">{x.draftNote}</p>
           </>
         )}
@@ -103,7 +102,9 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
           <section className="teaser draft-end">
             <div className="eyebrow">{x.writing}</div>
             <h2>{x.reachedEnd}</h2>
-            <WritingStatus lang={lang} percent={chapter.draft.percent} compact />
+            <div className="tz-draft">
+              <ProgressMeter percent={chapter.draft.percent} label={x.writing} />
+            </div>
             <Countdown lang={lang} target={chapter.draft?.release ?? dInfo?.release} />
             <SubscriberCount lang={lang} initial={subs0} />
             <p className="desc small">{t.soonP}</p>

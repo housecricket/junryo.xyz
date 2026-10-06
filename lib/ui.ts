@@ -1,8 +1,8 @@
 // Chữ cho các phần tương tác: đếm ngược, thanh mời đăng ký, câu trích, chương kế tiếp.
 import type { Lang } from "./content";
 
-/** Lịch ra chương mặc định (khi không có chương đang mở dần): Chủ nhật (0), 23:59 giờ Việt Nam */
-export const RELEASE = { weekday: 0, hour: 23, minute: 59, utcOffset: 7 };
+/** Lịch đủ chương mặc định (khi không có chương đang mở dần): 0:00 thứ Hai (1), giờ Việt Nam */
+export const RELEASE = { weekday: 1, hour: 0, minute: 0, utcOffset: 7 };
 
 
 export const UI = {
@@ -10,9 +10,9 @@ export const UI = {
     nextK: "Chương tiếp theo",
     readN: (n: number) => `Đọc chương ${n}`,
     weekK: "Tuần sau",
-    outIn: "Lên sóng sau",
+    outIn: "Đủ chương sau",
     units: ["ngày", "giờ", "phút", "giây"],
-    when: "23:59 Chủ nhật (giờ Việt Nam)",
+    when: "0:00 thứ Hai (giờ Việt Nam)",
     outNow: "Chương mới đã lên LinkedIn",
     quotesK: "Câu đáng nhớ",
     share: "Chia sẻ lên LinkedIn",
@@ -31,7 +31,7 @@ export const UI = {
     tomorrow: "ngày mai",
     tz: "",
     readDraft: "Đọc phần đã mở",
-    draftNote: "Chương mới được mở dần mỗi sáng 6:30–7:30 và mỗi tối 18:30–23:30. Đủ chương lúc 23:59 Chủ nhật.",
+    draftNote: "Chương đang được đăng dần. Đủ chương vào thứ Hai.",
     reachedEnd: "Bạn đã đọc tới phần mới nhất.",
     words: (w: number, t: number) => `${w.toLocaleString("vi-VN")} / ${t.toLocaleString("vi-VN")} chữ`,
     legendNative: "Đọc được ngay",
@@ -44,9 +44,9 @@ export const UI = {
     nextK: "Next chapter",
     readN: (n: number) => `Read Chapter ${n}`,
     weekK: "Next week",
-    outIn: "Out in",
+    outIn: "Full chapter in",
     units: ["d", "h", "m", "s"],
-    when: "Sunday, 11:59 p.m. Vietnam time",
+    when: "Monday, 12:00 a.m. Vietnam time",
     outNow: "The new chapter is out on LinkedIn",
     quotesK: "Lines worth keeping",
     share: "Share on LinkedIn",
@@ -65,7 +65,7 @@ export const UI = {
     tomorrow: "tomorrow",
     tz: " (Vietnam time)",
     readDraft: "Read what’s out so far",
-    draftNote: "The new chapter opens a little at a time, 6:30–7:30 a.m. and 6:30–11:30 p.m. Vietnam time. The full chapter is out Sunday at 11:59 p.m.",
+    draftNote: "This chapter is being published bit by bit, in Vietnamese. The full chapter is out on Monday.",
     reachedEnd: "You’ve reached the newest page.",
     words: (w: number, t: number) => `${w.toLocaleString("en-US")} / ${t.toLocaleString("en-US")} words`,
     legendNative: "Read in English",
@@ -79,9 +79,9 @@ export const UI = {
     nextK: "Siguiente capítulo",
     readN: (n: number) => `Leer el capítulo ${n}`,
     weekK: "La próxima semana",
-    outIn: "Sale en",
+    outIn: "Capítulo completo en",
     units: ["d", "h", "min", "s"],
-    when: "Domingo, 23:59 (hora de Vietnam)",
+    when: "Lunes, 0:00 (hora de Vietnam)",
     outNow: "El nuevo capítulo ya está en LinkedIn",
     quotesK: "Frases para recordar",
     share: "Compartir en LinkedIn",
@@ -100,7 +100,7 @@ export const UI = {
     tomorrow: "mañana",
     tz: " (hora de Vietnam)",
     readDraft: "Leer lo publicado",
-    draftNote: "El nuevo capítulo se abre poco a poco, de 6:30 a 7:30 y de 18:30 a 23:30 (hora de Vietnam). El capítulo completo sale el domingo a las 23:59.",
+    draftNote: "Este capítulo se publica poco a poco, en vietnamita. El capítulo completo sale el lunes.",
     reachedEnd: "Has llegado a la página más reciente.",
     words: (w: number, t: number) => `${w.toLocaleString("es-ES")} / ${t.toLocaleString("es-ES")} palabras`,
     legendNative: "Leer en español",

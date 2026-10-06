@@ -91,7 +91,7 @@ Chương mới được viết sẵn và đặt trong `content/chapters/vi/<số
 ```
 ---
 start: 2026-10-05T00:00:00+07:00     ← 0:00 thứ Hai, bắt đầu tuần của chương
-release: 2026-10-11T23:59:00+07:00   ← 23:59 Chủ nhật, đủ chương, kèm PDF
+release: 2026-10-12T00:00:00+07:00   ← 0:00 thứ Hai tuần sau: đủ chương, kèm PDF
 ---
 ```
 
@@ -101,9 +101,9 @@ Từ lúc `start`, mỗi ngày trong hai khung giờ **6:30–7:30 sáng** và *
 `lib/schedule.ts` → `WINDOWS`), GitHub tự build lại trang mỗi 30 phút và mở thêm một phần chương, chia đều
 theo thời gian tới lúc `release`. Người đọc thấy:
 
-- Mục lục và dải "Tuần sau": thanh **% · Đang lên dần** và link "Đọc phần đã mở".
-- Trang chương: phần đã mở, số chữ, con trỏ nhấp nháy ở dòng cuối, và trạng thái
-  **● Đang mở thêm phần mới** (trong khung giờ) hoặc **Phần tiếp theo mở lúc 18:30 hôm nay** (ngoài khung giờ).
+- Mục lục và dải "Tuần này": thanh **% · Đang lên dần** và link "Đọc phần đã mở".
+- Trang chương: phần đã mở, con trỏ nhấp nháy ở dòng cuối, dòng "Đủ chương vào thứ Hai" và đồng hồ đếm ngược.
+  Trang không hiện giờ mở phần tiếp theo.
 - Đúng giờ `release`: chương thành chương đã phát hành, đủ câu đáng nhớ, thẻ "Tuần sau" và nút tải PDF.
 
 Bạn không cần làm gì thêm trong tuần. Chuẩn bị chương sau: thả file `.md` (có `start`/`release` của tuần sau)
@@ -141,7 +141,7 @@ Con số hiện ở: phần đầu trang chủ, dải "Tuần sau", ô "Từng c
 
 | Phần | Lấy dữ liệu từ đâu | Sửa ở đâu |
 |---|---|---|
-| Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định 23:59 Chủ nhật giờ Việt Nam; khi có chương đang mở dần thì đếm tới mốc `release` của chương đó) |
+| Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định 0:00 thứ Hai giờ Việt Nam; khi có chương đang mở dần thì đếm tới mốc `release` của chương đó) |
 | Mở dần chương mới theo khung giờ | Phần đầu file chương (`start`, `release`) | `lib/schedule.ts` → `WINDOWS` |
 | Thẻ "Tuần sau" cuối chương | Phần `## Tuần sau` cuối mỗi file chương | Viết trong file `.md` của chương |
 | Câu đáng nhớ + nút chia sẻ LinkedIn | Các câu in đậm trong `## Sổ tay của Thắng Tất` | Viết trong file `.md` của chương |

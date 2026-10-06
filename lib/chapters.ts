@@ -5,7 +5,7 @@
 // 2. Lên lịch: file .md có phần đầu
 //      ---
 //      start: 2026-10-05T00:00:00+07:00     ← 0:00 thứ Hai, bắt đầu mở dần
-//      release: 2026-10-11T23:59:00+07:00   ← 23:59 Chủ nhật, phát hành đủ chương
+//      release: 2026-10-12T00:00:00+07:00   ← 0:00 thứ Hai tuần sau, phát hành đủ chương
 //      ---
 //    Trước "start": chưa hiện. Từ "start" đến "release": mỗi khung giờ trong lib/schedule.ts
 //    mở thêm một phần. Từ "release": thành chương đã phát hành, PDF (content/pdf/) được chép ra.
