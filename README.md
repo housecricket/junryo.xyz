@@ -13,6 +13,20 @@ Trang giới thiệu sách ba ngôn ngữ, xuất ra web tĩnh:
 Bấm vào chương đã ra trong mục lục sẽ mở trang đọc. Ở bản tiếng Anh và Tây Ban Nha, chương chưa dịch
 sẽ mở bản tiếng Việt (có lá cờ nhỏ bên cạnh tên chương để báo trước).
 
+## Tự chọn ngôn ngữ theo vị trí
+
+Khi ai đó mở trang chủ (`/`) lần đầu, trang tự chuyển theo vị trí của họ:
+
+| Vị trí (theo múi giờ của máy) | Trang |
+|---|---|
+| Việt Nam | `/` tiếng Việt |
+| Peru, Mexico, Colombia, Argentina, Chile… và Tây Ban Nha | `/es/` |
+| Nơi khác | theo ngôn ngữ trình duyệt (tiếng Việt / Tây Ban Nha), không thì `/en/` |
+
+GitHub Pages là web tĩnh nên không đọc được IP ở máy chủ; trang dùng múi giờ của máy người đọc, gần như trùng
+với quốc gia, không gọi dịch vụ ngoài. Người đọc bấm cờ để đổi thì trang nhớ lựa chọn đó. Link thẳng tới một
+chương (`/chuong/2/`…) và Google không bị chuyển hướng. Danh sách múi giờ ở `lib/geo.ts`.
+
 ## Chạy thử trên máy
 
 Cần Node.js 20 trở lên.
