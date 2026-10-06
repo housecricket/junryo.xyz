@@ -11,6 +11,7 @@ import { buildNow } from "@/lib/schedule";
 import Quotes from "./Quotes";
 import ReadingAids from "./ReadingAids";
 import TranslationNotice from "./TranslationNotice";
+import AuthorLink from "./AuthorLink";
 import { ArrowIcon } from "./Icons";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
@@ -206,7 +207,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
 
       <footer className="reader-foot">
         <div className="wrap">
-          <span>© 2026 · @dangtrunganh</span>
+          <AuthorLink />
           <span>{c.ft}</span>
         </div>
       </footer>

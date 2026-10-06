@@ -1,5 +1,6 @@
 // Nội dung trang theo ngôn ngữ. Sửa chữ ở đây, không cần đụng vào component.
 export const AMAZON_URL = "https://a.co/d/0jbHvq34";
+export const AUTHOR_URL = "https://www.linkedin.com/in/dangtrunganh";
 export const LINKEDIN_URL = "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7512726408108924930";
 
 export const LANGS = ["vi", "en", "es"] as const;

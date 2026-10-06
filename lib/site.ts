@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { content, type Lang } from "./content";
 
 // Thư mục con khi chạy trên GitHub Pages (vd "/muoi-phan-tram"), để trống với tên miền riêng.
-export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 // Địa chỉ đầy đủ của trang, dùng cho thẻ chia sẻ Facebook/LinkedIn và Google.
-// Đặt biến môi trường NEXT_PUBLIC_SITE_URL khi build bản thật.
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+// Mặc định là dangtrunganh.me; đặt biến môi trường NEXT_PUBLIC_SITE_URL nếu đổi tên miền.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://dangtrunganh.me").replace(/\/$/, "");
 
 // Đường dẫn trong trang (Next.js tự thêm BASE_PATH cho <Link>)
 export const PATHS: Record<Lang, string> = { vi: "/", en: "/en/", es: "/es/" };

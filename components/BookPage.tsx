@@ -9,6 +9,7 @@ import SubscriberCount from "./SubscriberCount";
 import { countAt } from "@/lib/subscribers";
 import { buildNow } from "@/lib/schedule";
 import Html from "./Html";
+import AuthorLink from "./AuthorLink";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
 import { ArrowIcon, BookIcon, Flag, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
@@ -362,7 +363,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
 
       <footer>
         <div className="wrap">
-          <span>© 2026 · @dangtrunganh</span>
+          <AuthorLink />
           <span>{c.ft}</span>
         </div>
       </footer>
