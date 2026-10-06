@@ -23,9 +23,28 @@ Khi ai đó mở trang chủ (`/`) lần đầu, trang tự chuyển theo vị t
 | Peru, Mexico, Colombia, Argentina, Chile… và Tây Ban Nha | `/es/` |
 | Nơi khác | theo ngôn ngữ trình duyệt (tiếng Việt / Tây Ban Nha), không thì `/en/` |
 
-GitHub Pages là web tĩnh nên không đọc được IP ở máy chủ; trang dùng múi giờ của máy người đọc, gần như trùng
+Trang là web tĩnh nên không đọc được IP ở máy chủ; trang dùng múi giờ của máy người đọc, gần như trùng
 với quốc gia, không gọi dịch vụ ngoài. Người đọc bấm cờ để đổi thì trang nhớ lựa chọn đó. Link thẳng tới một
 chương (`/chuong/2/`…) và Google không bị chuyển hướng. Danh sách múi giờ ở `lib/geo.ts`.
+
+## Đo lượt truy cập (Google Analytics 4)
+
+Đã gắn sẵn Measurement ID `G-FE2BPRQ831` trong `lib/analytics.ts`. Xem số liệu ở analytics.google.com
+(Reports → Realtime để thấy người đang xem ngay lúc này).
+
+Ngoài lượt xem trang, trang tự ghi các sự kiện (xem trong GA: Reports → Engagement → Events):
+
+| Sự kiện | Khi nào | Thông tin kèm theo |
+|---|---|---|
+| `chapter_open` | bấm mở một chương | `chapter`, `lang`, `from` (toc, this_week, chapter_end, prev_next, excerpt…), `chapter_lang` |
+| `read_progress` | đọc tới 25% / 50% / 90% chương | `chapter`, `percent` |
+| `subscribe_click` | bấm đăng ký bản tin LinkedIn | `from`, `page` |
+| `buy_click` | bấm mua trên Amazon | `from`, `page` |
+| `pdf_download` | tải PDF | `file` |
+| `share_quote` | chia sẻ câu trích | `page` |
+| `lang_switch`, `theme_toggle`, `author_click` | đổi ngôn ngữ, bật đọc đêm, bấm LinkedIn tác giả | |
+
+Muốn xem theo chương: trong GA vào Admin → Custom definitions → tạo custom dimension `chapter`, `from`, `percent`.
 
 ## Chạy thử trên máy
 
@@ -46,7 +65,7 @@ Toàn bộ trang nằm trong thư mục `out/`. Tải thư mục đó lên bất
 
 - **Netlify:** kéo thả thư mục `out/` vào app.netlify.com/drop
 - **Vercel / Cloudflare Pages:** kết nối repo GitHub, lệnh build `npm run build`, thư mục xuất `out`
-- **GitHub Pages:** tự động, xem mục bên dưới
+- **Vercel (đang dùng):** tự động khi push, xem mục "Xuất bản trên Vercel"
 
 Trước khi build bản thật, đặt tên miền để ảnh chia sẻ trên Facebook/LinkedIn hiện đúng:
 
@@ -54,26 +73,21 @@ Trước khi build bản thật, đặt tên miền để ảnh chia sẻ trên 
 NEXT_PUBLIC_SITE_URL=https://ten-mien-cua-ban.com npm run build
 ```
 
-## Đưa lên GitHub và tự xuất bản bằng GitHub Pages
+## Xuất bản trên Vercel
 
-Thư mục này đã là một repo git, có sẵn một commit đầu tiên trên nhánh `master`.
+Repo GitHub đã nối với Vercel: mỗi lần `git push` lên `master`, Vercel tự build (`npm run build`) và đăng lên
+https://dangtrunganh.me.
 
-1. Vào github.com → **New repository**, đặt tên (vd `muoi-phan-tram`), **không** tích thêm README hay .gitignore.
-2. Trong thư mục dự án, chạy:
+Để chương mới **mở dần theo lịch** và **đủ chương lúc 0:00 thứ Hai**, trang cần được build lại theo giờ. Việc này do
+`.github/workflows/deploy.yml` làm: theo lịch, nó gọi Deploy Hook của Vercel. Cài một lần:
 
-   ```bash
-   git remote add origin https://github.com/<tên-github-của-bạn>/muoi-phan-tram.git
-   git push -u origin master
-   ```
+1. Vercel → Project → **Settings → Git → Deploy Hooks** → tạo hook (tên tuỳ ý, nhánh `master`), chép URL.
+2. GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**:
+   tên `VERCEL_DEPLOY_HOOK`, giá trị là URL vừa chép.
+3. Thử ngay: GitHub → tab **Actions** → "Rebuild on schedule (Vercel)" → **Run workflow**; trên Vercel sẽ thấy một
+   lần build mới.
 
-3. Trên GitHub, vào **Settings → Pages → Build and deployment → Source**, chọn **GitHub Actions**.
-4. Mở tab **Actions** để xem quá trình build. Khoảng 1–2 phút sau trang có ở
-   `https://<tên-github-của-bạn>.github.io/muoi-phan-tram/`.
-
-Từ đó, mỗi lần sửa và `git push` lên `master`, trang tự cập nhật.
-
-**Dùng tên miền riêng:** vào Settings → Pages → Custom domain, nhập tên miền, rồi xoá dòng
-`NEXT_PUBLIC_BASE_PATH` trong `.github/workflows/deploy.yml` và đặt `NEXT_PUBLIC_SITE_URL` thành tên miền đó.
+Mỗi ngày khoảng 16 lần build theo lịch, nằm trong giới hạn gói miễn phí của Vercel.
 
 ## Các file của git và GitHub
 
@@ -84,8 +98,7 @@ Từ đó, mỗi lần sửa và `git push` lên `master`, trang tự cập nh�
 | `.editorconfig` | Thống nhất thụt lề 2 dấu cách, UTF-8 trong mọi trình soạn thảo |
 | `.nvmrc` | Phiên bản Node.js (20) dùng cho máy bạn và GitHub Actions |
 | `.env.example` | Mẫu biến môi trường, sao chép thành `.env.local` khi cần |
-| `.github/workflows/deploy.yml` | Tự build và xuất bản lên GitHub Pages khi push lên `master` |
-| `public/.nojekyll` | Cho GitHub Pages phục vụ đúng thư mục `_next/` của Next.js |
+| `.github/workflows/deploy.yml` | Nhắc Vercel build lại theo lịch (mở dần chương, đủ chương 0:00 thứ Hai) |
 
 ## Thêm một chương mới
 
@@ -112,7 +125,7 @@ release: 2026-10-12T00:00:00+07:00   ← 0:00 thứ Hai tuần sau: đủ chươ
 PDF của chương đặt sẵn ở `content/pdf/chuong-<số>.pdf` (chưa công khai cho tới giờ phát hành).
 
 Từ lúc `start`, mỗi ngày trong hai khung giờ **6:30–7:30 sáng** và **18:30–23:30 tối** (giờ Việt Nam, sửa ở
-`lib/schedule.ts` → `WINDOWS`), GitHub tự build lại trang mỗi 30 phút và mở thêm một phần chương, chia đều
+`lib/schedule.ts` → `WINDOWS`), trang được build lại mỗi 30 phút (Vercel, theo lịch ở mục "Xuất bản trên Vercel") và mở thêm một phần chương, chia đều
 theo thời gian tới lúc `release`. Người đọc thấy:
 
 - Mục lục và dải "Tuần này": thanh **% · Đang lên dần** và link "Đọc phần đã mở".

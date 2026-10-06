@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AMAZON_URL, LINKEDIN_URL, type Lang } from "@/lib/content";
 import { UI } from "@/lib/ui";
+import { track } from "@/lib/analytics";
 
 const KEY_READ = "mptcl:read";
 const KEY_HIDE = "mptcl:bar-hidden";
@@ -22,6 +23,7 @@ export default function ReadingAids({ lang, n, buyLabel, subLabel }: { lang: Lan
 
   useEffect(() => {
     let dismissed = false;
+    const sent = new Set<number>();
     try {
       dismissed = sessionStorage.getItem(KEY_HIDE) === "1";
     } catch {}
@@ -33,6 +35,13 @@ export default function ReadingAids({ lang, n, buyLabel, subLabel }: { lang: Lan
       const v = Math.min(1, Math.max(0, -r.top / Math.max(total, 1)));
       setP(v);
       if (!dismissed) setHidden(v < 0.5 || v > 0.98);
+      // Ghi nhận người đọc đã đọc tới 25% / 50% / 90% chương
+      for (const m of [25, 50, 90]) {
+        if (v * 100 >= m && !sent.has(m)) {
+          sent.add(m);
+          track("read_progress", { chapter: n, percent: m, lang });
+        }
+      }
       if (v > 0.9) {
         const read = getRead();
         if (!read.includes(n)) {
@@ -45,7 +54,7 @@ export default function ReadingAids({ lang, n, buyLabel, subLabel }: { lang: Lan
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [n]);
+  }, [n, lang]);
 
   const close = () => {
     setHidden(true);

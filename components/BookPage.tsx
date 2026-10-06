@@ -12,7 +12,7 @@ import Html from "./Html";
 import AuthorLink from "./AuthorLink";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
-import { ArrowIcon, BookIcon, Flag, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
+import { ArrowIcon, BookIcon, ClockIcon, Flag, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -224,7 +224,10 @@ export default function BookPage({ lang }: { lang: Lang }) {
                 {x.writing}
               </span>
             )}
-            <span className="soon-swatch">{c.soon}</span>
+            <span className="soon-swatch">
+              <ClockIcon style={{ width: "1.1rem", height: "1.1rem" }} />
+              {c.soon}
+            </span>
           </div>
           <div className="parts">
             {PARTS.map(([key, count]) => (
@@ -279,7 +282,12 @@ export default function BookPage({ lang }: { lang: Lang }) {
                               )}
                             </Link>
                           ) : (
-                            <Html html={ch.title} />
+                            <>
+                              <Html html={ch.title} />
+                              <span className="soon-ic" title={c.soon}>
+                                <ClockIcon />
+                              </span>
+                            </>
                           )}
                         </span>
                         <Html className="th" html={ch.theory} />

@@ -1,3 +1,5 @@
+/* Mặc định nền trắng như trang sách in. Chế độ đọc đêm chỉ bật khi người đọc bấm nút mặt trăng */
+:root{color-scheme:light}
 /* Reset nhỏ (thay cho phần khung mà trang artifact tự thêm) */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -18,10 +20,7 @@ html{scroll-behavior:smooth}
   --sans:var(--font-bevn),system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --measure:36rem;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E0E0D; --paper:#171716; --ink:#EDEDEA; --muted:#A3A3A0; --line:#2C2C2A;
-  --teal:#F4F4F1; --teal2:#EDEDEA; --accent:#F4F4F1; --on-accent:#0B0B0B;
-  --band:#000000; --band-ink:#F2F2F0; --band-muted:#9A9A97; --band-line:#2E2E2C; --dot-off:#262624; --dot-on:#FFFFFF; color-scheme:dark}}
+/* Chế độ đọc đêm (nút mặt trăng, lưu trong trình duyệt người đọc) */
 :root[data-theme="dark"]{
   --bg:#0E0E0D; --paper:#171716; --ink:#EDEDEA; --muted:#A3A3A0; --line:#2C2C2A;
   --teal:#F4F4F1; --teal2:#EDEDEA; --accent:#F4F4F1; --on-accent:#0B0B0B;
@@ -294,7 +293,7 @@ footer.reader-foot{padding-top:2.4rem}
 
 /* Mục lục: một hệ ký hiệu duy nhất. Số chương là chữ thường; trạng thái là icon nhỏ sau tên chương.
    Sách mở = đọc ngay · Cờ = mở bản ngôn ngữ khác · Không icon, chữ mờ = sắp ra mắt */
-.legend .soon-swatch{font-family:var(--serif);color:var(--muted)}
+.legend .soon-swatch{color:var(--muted)}
 .in-lang{opacity:1}
 .legend .flag,.in-lang .flag{width:1.05rem;height:.7rem;opacity:1}
 
@@ -353,3 +352,18 @@ footer .author a{display:inline-flex;align-items:center;gap:.4em;color:inherit;t
 footer .author a:hover{color:var(--band-ink);border-bottom-color:currentColor}
 footer .author a:focus-visible{outline:2px solid var(--band-ink);outline-offset:2px}
 footer .author svg{flex:none}
+
+/* Nút chế độ đọc đêm */
+.theme-btn{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;margin-left:.6rem;background:transparent;border:1px solid var(--line);color:var(--ink);cursor:pointer;border-radius:50%;padding:0;transition:border-color .15s}
+.theme-btn:hover{border-color:var(--ink)}
+.theme-btn:focus-visible{outline:2px solid var(--muted);outline-offset:2px}
+.theme-btn svg{width:1rem;height:1rem}
+.theme-btn .sun{display:none}
+:root[data-theme="dark"] .theme-btn .sun{display:block}
+:root[data-theme="dark"] .theme-btn .moon{display:none}
+.lang{align-items:center}
+.reader-bar .right{display:flex;align-items:center;gap:.4rem}
+
+/* Chương sắp ra mắt: đồng hồ nhỏ sau tên chương */
+.soon-ic{display:inline-flex;vertical-align:-.12em;margin-left:.4rem;color:var(--muted);opacity:.8}
+.soon-ic .ic{width:.95em;height:.95em}

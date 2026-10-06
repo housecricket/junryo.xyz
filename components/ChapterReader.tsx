@@ -10,6 +10,7 @@ import { countAt } from "@/lib/subscribers";
 import { buildNow } from "@/lib/schedule";
 import Quotes from "./Quotes";
 import ReadingAids from "./ReadingAids";
+import ThemeToggle from "./ThemeToggle";
 import TranslationNotice from "./TranslationNotice";
 import AuthorLink from "./AuthorLink";
 import { ArrowIcon } from "./Icons";
@@ -67,9 +68,12 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         <Link href={`${home}#muc-luc`} className="back">
           ← {t.contents}
         </Link>
-        <Link href={home} className="brand">
-          {c.title}
-        </Link>
+        <span className="right">
+          <Link href={home} className="brand">
+            {c.title}
+          </Link>
+          <ThemeToggle lang={lang} />
+        </span>
       </nav>
 
       {lang === "vi" && <TranslationNotice />}

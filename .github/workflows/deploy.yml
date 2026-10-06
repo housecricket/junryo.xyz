@@ -1,55 +1,36 @@
-# Tự build và đưa trang lên GitHub Pages mỗi khi đẩy code lên nhánh main.
-# Lần đầu: vào Settings → Pages → Source, chọn "GitHub Actions".
-name: Deploy to GitHub Pages
+# Trang chạy trên Vercel: mỗi lần push, Vercel tự build và đăng.
+# Workflow này chỉ nhắc Vercel build lại THEO LỊCH, để chương mới mở dần trong tuần
+# và đủ chương đúng 0:00 thứ Hai (trang là web tĩnh, chỉ đổi nội dung khi được build lại).
+#
+# Cài một lần:
+#   1. Vercel → Project → Settings → Git → Deploy Hooks → tạo hook cho nhánh master, chép URL.
+#   2. GitHub repo → Settings → Secrets and variables → Actions → New repository secret:
+#      tên VERCEL_DEPLOY_HOOK, giá trị là URL vừa chép.
+name: Rebuild on schedule (Vercel)
 
 on:
-  push:
-    branches: [master]
   workflow_dispatch:
+  # Giờ UTC = giờ Việt Nam trừ 7
+  schedule:
+    - cron: "30 11-16 * * *"   # 18:30, 19:30 … 23:30 tối giờ VN
+    - cron: "0 12-16 * * *"    # 19:00, 20:00 … 23:00 tối giờ VN
+    - cron: "30 23 * * *"      # 6:30 sáng giờ VN
+    - cron: "0,30 0 * * *"     # 7:00 và 7:30 sáng giờ VN
+    - cron: "0 17 * * 0"       # 0:00 thứ Hai giờ VN: đủ chương
+    - cron: "10 17 * * 0"      # 0:10 thứ Hai giờ VN: chạy lại cho chắc
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  build:
+  rebuild:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - id: pages
-        uses: actions/configure-pages@v5
-
-      - run: npm ci
-
-      - name: Build
-        run: npm run build
+      - name: Nhắc Vercel build lại
         env:
-          NEXT_TELEMETRY_DISABLED: 1
-          # Nếu dùng tên miền riêng (CNAME), xoá dòng NEXT_PUBLIC_BASE_PATH
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
-          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "Chưa có secret VERCEL_DEPLOY_HOOK, bỏ qua."; exit 0
+          fi
+          curl -fsS -X POST "$HOOK"

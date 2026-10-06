@@ -87,3 +87,13 @@ export function LegendDot({ on }: { on?: boolean }) {
     </svg>
   );
 }
+
+/** Đồng hồ nhỏ: chương sắp ra mắt */
+export function ClockIcon({ style }: { style?: React.CSSProperties }) {
+  return (
+    <svg className="ic" viewBox="0 0 24 24" aria-hidden="true" style={style} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </svg>
+  );
+}

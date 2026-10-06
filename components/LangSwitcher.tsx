@@ -3,6 +3,7 @@ import Link from "next/link";
 import { LANGS, type Lang } from "@/lib/content";
 import { PATHS } from "@/lib/site";
 import { Flag } from "./Icons";
+import ThemeToggle from "./ThemeToggle";
 
 const NAMES: Record<Lang, string> = { vi: "Tiếng Việt", en: "English", es: "Español" };
 
@@ -32,6 +33,7 @@ export default function LangSwitcher({ current }: { current: Lang }) {
           </Link>
         ))}
       </div>
+      <ThemeToggle lang={current} />
     </nav>
   );
 }
