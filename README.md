@@ -90,8 +90,8 @@ Chương mới được viết sẵn và đặt trong `content/chapters/vi/<số
 
 ```
 ---
-start: 2026-10-06T18:30:00+07:00     ← bắt đầu mở dần
-release: 2026-10-12T08:00:00+07:00   ← đủ chương, kèm PDF
+start: 2026-10-05T00:00:00+07:00     ← 0:00 thứ Hai, bắt đầu tuần của chương
+release: 2026-10-11T23:59:00+07:00   ← 23:59 Chủ nhật, đủ chương, kèm PDF
 ---
 ```
 
@@ -141,7 +141,7 @@ Con số hiện ở: phần đầu trang chủ, dải "Tuần sau", ô "Từng c
 
 | Phần | Lấy dữ liệu từ đâu | Sửa ở đâu |
 |---|---|---|
-| Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định thứ Hai 8:00 giờ Việt Nam) |
+| Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định 23:59 Chủ nhật giờ Việt Nam; khi có chương đang mở dần thì đếm tới mốc `release` của chương đó) |
 | Mở dần chương mới theo khung giờ | Phần đầu file chương (`start`, `release`) | `lib/schedule.ts` → `WINDOWS` |
 | Thẻ "Tuần sau" cuối chương | Phần `## Tuần sau` cuối mỗi file chương | Viết trong file `.md` của chương |
 | Câu đáng nhớ + nút chia sẻ LinkedIn | Các câu in đậm trong `## Sổ tay của Thắng Tất` | Viết trong file `.md` của chương |

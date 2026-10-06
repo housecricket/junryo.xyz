@@ -104,7 +104,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
             <div className="eyebrow">{x.writing}</div>
             <h2>{x.reachedEnd}</h2>
             <WritingStatus lang={lang} percent={chapter.draft.percent} compact />
-            <Countdown lang={lang} />
+            <Countdown lang={lang} target={chapter.draft?.release ?? dInfo?.release} />
             <SubscriberCount lang={lang} initial={subs0} />
             <p className="desc small">{t.soonP}</p>
             <div className="row">
@@ -136,7 +136,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         return (
           <div className="wrap tz-outer">
           <section className={`teaser${next ? "" : " soon"}`}>
-            <div className="eyebrow">{next || (lang === "en" && AVAILABLE.vi.includes(nn)) ? x.nextK : x.weekK}</div>
+            <div className="eyebrow">{next || (lang === "en" && AVAILABLE.vi.includes(nn)) ? x.nextK : draftHere ? x.thisWeek : x.weekK}</div>
             <div className="tz-n">
               {t.chapter} {nn}
             </div>
@@ -172,7 +172,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
                     </Link>
                   </div>
                 )}
-                <Countdown lang={lang} />
+                <Countdown lang={lang} target={chapter.draft?.release ?? dInfo?.release} />
                 <SubscriberCount lang={lang} initial={subs0} />
                 <p className="desc small">{t.soonP}</p>
                 <div className="row">

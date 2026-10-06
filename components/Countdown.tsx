@@ -1,29 +1,33 @@
 "use client";
-// Đếm ngược tới lần ra chương kế tiếp (thứ Hai 8:00 giờ Việt Nam).
+// Đếm ngược tới lúc chương mới ra đủ: mốc "release" của chương đang mở dần, hoặc 23:59 Chủ nhật.
 import { useEffect, useState } from "react";
 import { RELEASE, UI } from "@/lib/ui";
 import type { Lang } from "@/lib/content";
 
 function nextRelease(now: Date) {
-  // Mốc theo UTC: 8:00 UTC+7 = 1:00 UTC
-  const t = new Date(now);
-  t.setUTCHours(RELEASE.hour - RELEASE.utcOffset, 0, 0, 0);
-  const add = (RELEASE.weekday - t.getUTCDay() + 7) % 7;
-  t.setUTCDate(t.getUTCDate() + add);
-  if (t <= now) t.setUTCDate(t.getUTCDate() + 7);
-  return t;
+  // Tính theo giờ Việt Nam: dời đồng hồ +7 giờ, tìm Chủ nhật 23:59 kế tiếp, rồi dời lại
+  const off = RELEASE.utcOffset * 3600_000;
+  const v = new Date(now.getTime() + off);
+  let t = Date.UTC(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate(), RELEASE.hour, RELEASE.minute);
+  t += ((RELEASE.weekday - v.getUTCDay() + 7) % 7) * 86400_000;
+  if (t <= v.getTime()) t += 7 * 86400_000;
+  return new Date(t - off);
 }
 
-export default function Countdown({ lang }: { lang: Lang }) {
+export default function Countdown({ lang, target }: { lang: Lang; target?: string }) {
   const ui = UI[lang];
   const [left, setLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    const tick = () => setLeft(nextRelease(new Date()).getTime() - Date.now());
+    const tick = () => {
+      const now = new Date();
+      const t = target && new Date(target) > now ? new Date(target) : nextRelease(now);
+      setLeft(t.getTime() - now.getTime());
+    };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [target]);
 
   // Trước khi trình duyệt chạy script: hiện lịch cố định
   if (left === null) return <span className="cd">{ui.when}</span>;

@@ -86,7 +86,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
         <section className="next-strip">
           <div className="wrap in">
             <div className="ns-t">
-              <span className="eyebrow">{translated ? x.weekK : x.weekAlt}</span>
+              <span className="eyebrow">{dn === upcoming ? (translated ? x.thisWeek : x.thisWeekAlt) : translated ? x.weekK : x.weekAlt}</span>
               <span className="ns-title">
                 {x.chapter} {upcoming} · {c.c[upcoming - 1]}
               </span>
@@ -103,7 +103,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
               )}
             </div>
             <div className="ns-a">
-              <Countdown lang={lang} />
+              <Countdown lang={lang} target={dInfo?.release} />
               <SubscriberCount lang={lang} initial={subs0} variant="pill" />
               <a className="btn primary" href={LINKEDIN_URL} {...ext}>
                 {c.sub} <ArrowIcon />
