@@ -1,0 +1,5 @@
+# Chuẩn hoá xuống dòng giữa Windows và macOS/Linux
+* text=auto eol=lf
+*.jpg binary
+*.png binary
+*.ico binary

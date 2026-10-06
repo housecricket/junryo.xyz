@@ -1,0 +1,17 @@
+# Thư viện và kết quả build
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Biến môi trường riêng
+.env
+.env*.local
+
+# Log và file hệ điều hành
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
