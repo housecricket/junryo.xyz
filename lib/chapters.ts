@@ -15,18 +15,20 @@ import { marked } from "marked";
 import { BASE_PATH } from "./site";
 import { buildNow, revealFraction } from "./schedule";
 
-export type ReadLang = "vi" | "en";
+export type ReadLang = "vi" | "en" | "es";
 
 /** Các chương đã phát hành cố định */
 const PUBLISHED: Record<ReadLang, number[]> = {
   vi: [1, 2, 3, 4],
-  en: [1],
+  en: [1, 2, 3], // bản tiếng Anh chậm hơn tiếng Việt 1 chương
+  es: [1, 2], // bản tiếng Tây Ban Nha chậm hơn tiếng Việt 2 chương
 };
 
 /** File PDF trong public/pdf/ */
 export const PDF_FILES: Record<ReadLang, Record<number, string>> = {
   vi: { 1: "chuong-1.pdf", 2: "chuong-2.pdf", 3: "chuong-3.pdf", 4: "chuong-4.pdf", 5: "chuong-5.pdf" },
   en: { 1: "chapter-1-en.pdf" },
+  es: {},
 };
 
 const dir = (lang: ReadLang) => path.join(process.cwd(), "content", "chapters", lang);
@@ -61,17 +63,18 @@ export function scheduled(lang: ReadLang): Sched[] {
 const NOW = buildNow();
 
 /** Các chương đã đọc được trọn vẹn (đã phát hành + chương có lịch đã tới giờ phát hành) */
-export const AVAILABLE: Record<ReadLang, number[]> = {
-  vi: [...new Set([...PUBLISHED.vi, ...scheduled("vi").filter((s) => NOW >= s.release).map((s) => s.n)])].sort((a, b) => a - b),
-  en: [...new Set([...PUBLISHED.en, ...scheduled("en").filter((s) => NOW >= s.release).map((s) => s.n)])].sort((a, b) => a - b),
-};
+const available = (l: ReadLang) =>
+  [...new Set([...PUBLISHED[l], ...scheduled(l).filter((s) => NOW >= s.release).map((s) => s.n)])].sort((a, b) => a - b);
+export const AVAILABLE: Record<ReadLang, number[]> = { vi: available("vi"), en: available("en"), es: available("es") };
 
-/** Số chương tiếng Việt đã phát hành liên tiếp từ chương 1 */
-export const RELEASED = (() => {
+/** Số chương đã phát hành liên tiếp từ chương 1, theo ngôn ngữ */
+export function releasedCount(lang: ReadLang): number {
   let k = 0;
-  while (AVAILABLE.vi.includes(k + 1)) k++;
+  while (AVAILABLE[lang].includes(k + 1)) k++;
   return k;
-})();
+}
+/** Số chương tiếng Việt đã phát hành (bản gốc, luôn đi trước) */
+export const RELEASED = releasedCount("vi");
 
 /** Chương đang mở dần (đã tới "start", chưa tới "release") */
 export function draftNumber(lang: ReadLang): number | null {
@@ -87,7 +90,7 @@ export function readablePages(lang: ReadLang): number[] {
 
 /** Đường dẫn trang đọc của một chương */
 export function chapterPath(lang: ReadLang, n: number) {
-  return lang === "vi" ? `/chuong/${n}/` : `/en/chapter/${n}/`;
+  return lang === "vi" ? `/chuong/${n}/` : lang === "en" ? `/en/chapter/${n}/` : `/es/capitulo/${n}/`;
 }
 
 /** Link PDF, chỉ khi chương đã phát hành và file có thật trong public/pdf/ */
@@ -118,10 +121,10 @@ const inline = (s: string) => marked.parseInline(s, { async: false }) as string;
 
 /** Đọc phần "Tuần sau" cuối chương: tên chương kế, câu mồi, đoạn mô tả */
 function parseTeaser(md: string): Teaser | null {
-  const m = md.match(/\n## (?:Tuần sau|Next Week)\n([\s\S]*)$/);
+  const m = md.match(/\n## (?:Tuần sau|Next Week|La próxima semana)\n([\s\S]*)$/);
   if (!m) return null;
   const parts = m[1].split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
-  const head = parts[0]?.match(/^\*\*(?:Chương|Chapter) (\d+) [–-] (.+)\*\*$/);
+  const head = parts[0]?.match(/^\*\*(?:Chương|Chapter|Capítulo) (\d+) [–-] (.+)\*\*$/);
   if (!head) return null;
   const rest = parts.slice(1).filter((p) => !p.startsWith("**")); // bỏ đoạn kêu gọi LinkedIn/Amazon
   return {
@@ -134,7 +137,7 @@ function parseTeaser(md: string): Teaser | null {
 
 /** Các câu in đậm trong "Sổ tay của Thắng Tất" → câu đáng nhớ để chia sẻ */
 function parseQuotes(md: string): string[] {
-  const nb = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook)/)[1] ?? "";
+  const nb = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)/)[1] ?? "";
   return [...nb.matchAll(/^\d+\. \*\*(.+?)\*\*/gm)].map((m) => m[1]);
 }
 
@@ -144,8 +147,9 @@ const countWords = (s: string) => s.replace(/^#.*$/gm, "").split(/\s+/).filter(B
 function revealPart(story: string, fraction: number): string {
   const blocks = story.split(/\n\s*\n/).filter((b) => b.trim());
   // Khung lý thuyết (nhiều dòng >) là một khối; các khối khác là đoạn văn, tiêu đề, ảnh
-  let k = Math.max(1, Math.floor(blocks.length * fraction));
-  while (k > 1 && /^#{1,6} /.test(blocks[k - 1].trim())) k--;
+  // Ngay khi bắt đầu tuần đã có tiêu đề mục đầu và đoạn mở đầu
+  let k = Math.max(2, Math.floor(blocks.length * fraction));
+  while (k > 2 && /^#{1,6} /.test(blocks[k - 1].trim())) k--;
   return blocks.slice(0, k).join("\n\n");
 }
 
@@ -163,16 +167,16 @@ export function loadChapter(lang: ReadLang, n: number): Chapter {
   md = md
     .replace(/^# .+\n+/m, "") // bỏ tiêu đề, trang tự hiển thị
     .replace(/^[A-Z][a-z]{2} \d{1,2}, \d{4} · @\S+\n+/m, "") // bỏ dòng ngày đăng
-    .replace(/\n## (Tuần sau|Next Week)\n[\s\S]*$/, "\n"); // phần "tuần sau" thay bằng thẻ chương kế
+    .replace(/\n## (Tuần sau|Next Week|La próxima semana)\n[\s\S]*$/, "\n"); // phần "tuần sau" thay bằng thẻ chương kế
 
   // Chương đang mở dần: chỉ lấy phần truyện đã tới giờ mở
   let draft: Draft | null = null;
   if (fm.meta.start && fm.meta.release && NOW < new Date(fm.meta.release)) {
-    const story = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook)/)[0];
+    const story = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)/)[0];
     const frac = revealFraction(new Date(fm.meta.start), new Date(fm.meta.release), NOW);
     md = revealPart(story, frac);
     draft = {
-      percent: Math.round(frac * 100),
+      percent: Math.max(1, Math.round(frac * 100)),
       words: countWords(md),
       total: countWords(story),
       release: new Date(fm.meta.release).toISOString(),

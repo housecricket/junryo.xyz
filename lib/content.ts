@@ -9,7 +9,7 @@ export type Lang = (typeof LANGS)[number];
 export const content = {
   "vi": {
     "cont": "Đọc tiếp chương 1",
-    "other_lang": {"en":"Mở bản tiếng Anh","vi":"Mở bản tiếng Việt"},
+    "other_lang": {"en":"Mở bản tiếng Anh","vi":"Mở bản tiếng Việt","es":"Mở bản tiếng Tây Ban Nha"},
     "title": "Mười phần trăm còn lại",
     "eyebrow": "Truyện quản trị · Mỗi tuần một chương",
     "h1": "Mười phần trăm <em>còn lại</em>",
@@ -86,7 +86,7 @@ export const content = {
     "ex_eb": "Đọc thử · Chương 1",
     "ex_h": "Chỗ đau",
     "ex_sub": "Lần báo thứ ba",
-    "ex_more": "Chương 1 đến 4 đã ra trên LinkedIn. Sách đã có trên Amazon.",
+    "ex_more": "Chương 1 đến {n} đã ra trên LinkedIn. Sách đã có trên Amazon.",
     "full": "Đặt mua sách",
     "sub": "Đăng ký trên LinkedIn",
     "f_eb": "Theo dõi câu chuyện",
@@ -110,7 +110,7 @@ export const content = {
   },
   "en": {
     "cont": "Keep reading Chapter 1",
-    "other_lang": {"en":"Opens in English","vi":"Opens in Vietnamese (not yet translated)"},
+    "other_lang": {"en":"Opens in English","vi":"Opens in Vietnamese (not yet translated)","es":"Opens in Spanish"},
     "title": "The Last 10%",
     "eyebrow": "A management novel · One chapter a week",
     "h1": "The Last <em>10%</em>",
@@ -187,7 +187,7 @@ export const content = {
     "ex_eb": "Sample · Chapter 1",
     "ex_h": "Where It Hurts",
     "ex_sub": "The Third Report",
-    "ex_more": "Chapter 1 is in English. Chapters 2 to 4 are out in Vietnamese, with translations on the way. The book is on Amazon.",
+    "ex_more": "Chapters 1 to {n} are out. The book is available on Amazon.",
     "full": "Get the book",
     "sub": "Subscribe on LinkedIn",
     "f_eb": "Follow the story",
@@ -210,8 +210,8 @@ export const content = {
     ]
   },
   "es": {
-    "cont": "Seguir leyendo (en inglés)",
-    "other_lang": {"en":"Se abre en inglés","vi":"Se abre en vietnamita (aún sin traducir)"},
+    "cont": "Seguir leyendo el capítulo 1",
+    "other_lang": {"en":"Se abre en inglés","vi":"Se abre en vietnamita (aún sin traducir)","es":"Se abre en español"},
     "title": "El último 10 %",
     "eyebrow": "Novela de management · Un capítulo por semana",
     "h1": "El último <em>10 %</em>",
@@ -288,7 +288,7 @@ export const content = {
     "ex_eb": "Adelanto · Capítulo 1",
     "ex_h": "Donde duele",
     "ex_sub": "El tercer aviso",
-    "ex_more": "Este adelanto es una traducción al español. El capítulo completo está en inglés y los capítulos 2 a 4, en vietnamita. El libro está en Amazon.",
+    "ex_more": "Ya se publicaron los capítulos 1 a {n}. El libro está disponible en Amazon.",
     "full": "Comprar el libro",
     "sub": "Suscribirse en LinkedIn",
     "f_eb": "Sigue la historia",
@@ -302,13 +302,13 @@ export const content = {
     "o2b": "Suscribirse en LinkedIn",
     "ft": "Hải Đăng y todos los personajes del libro son ficticios.",
     "excerpt": [
-      "En Hải Đăng, los agentes hacían el noventa por ciento del trabajo. Thắng Tất se ocupaba del diez restante.",
-      "Hải Đăng, que en vietnamita significa “faro”, alquilaba agentes de IA. Sus clientes eran un tipo de negocio nuevo que había brotado en los últimos años: la empresa de una sola persona. Un único CEO, respaldado por un equipo de agentes alquilados por meses. Un agente de contabilidad, uno de ventas, uno de atención al cliente, uno de compras. Más de diez mil empresas así funcionaban sobre la plataforma de Hải Đăng. Detrás de la plataforma, las personas de verdad apenas llenaban dos filas de escritorios.",
-      "Trần Thắng Tất se sentaba en la segunda fila, en el equipo de operaciones con clientes. Su trabajo era atender los casos que los agentes no podían resolver solos, o aquellos en los que a un CEO no le había gustado cómo los había resuelto un agente. Cada caso llegaba a su pantalla con un timbre corto. Dos años, unos cien timbres al día. Tantos que algunas noches, ya en la cama, todavía los oía.",
-      "Thắng Tất era rápido. Leía en segundos una conversación entre un CEO y un agente, veía exactamente dónde se había equivocado el agente, corregía la configuración y cerraba el ticket. La clasificación de la semana anterior lo ponía cuarto en tiempo de gestión. No era el mejor, pero nadie se había quejado nunca de él.",
-      "Y ese era el problema. Todo iba bien.",
-      "El primer día, Thắng Tất estaba tan nervioso que leía cada línea del razonamiento de un agente como si fuera una novela policiaca. Llenó tres páginas de un cuaderno con los errores típicos de los agentes, y no dejaba de preguntar a la formadora por qué el agente de ventas saludaba a los clientes con tanta rigidez. Ahora el cuaderno dormía en un cajón, con la tapa cubierta de polvo. Ya no lo necesitaba."
-    ]
+      "En Hải Đăng, que en vietnamita significa ‘faro’, los agentes hacían el noventa por ciento del trabajo. Thắng Tất se ocupaba del diez por ciento restante.",
+      "Hải Đăng alquilaba agentes de IA. Sus clientes eran un tipo nuevo de empresa que en los últimos años había brotado como hongos después de la lluvia: la empresa de una sola persona. Un único CEO y, a su alrededor, todo un equipo de agentes alquilados por mes. El agente contable llevaba los libros. El agente de ventas atendía a los clientes. El agente de atención respondía mensajes a medianoche. El agente de compras pedía lana, tela, papel para imprimir. Más de diez mil empresas así funcionaban sobre la plataforma de Hải Đăng, de día y de noche. Detrás de esa plataforma, las personas de carne y hueso apenas alcanzaban para llenar dos filas de escritorios.",
+      "Trần Thắng Tất se sentaba en la segunda fila, en el equipo de operaciones con clientes. Su trabajo era recibir los casos que los agentes no lograban resolver por sí mismos, o aquellos en los que el CEO no estaba conforme con cómo el agente los había resuelto. Cada caso aparecía en su pantalla acompañado de un timbre corto y seco, como una cucharita golpeando el borde de un vaso. Desde hacía dos años, unos cien timbres así cada día. Había noches en que, acostado en la oscuridad, todavía lo oía sonar en algún lugar de su cabeza, y luego apagarse.",
+      "Trabajaba rápido. Una conversación larga entre un CEO y un agente le bastaba recorrerla en unos segundos para ver en qué frase el agente había entendido mal. Ajustar la configuración, cerrar el ticket, tomar el siguiente caso. La tabla de la semana anterior ponía su nombre en el cuarto lugar en velocidad. No era el mejor, pero tampoco nadie se había quejado nunca de él.",
+      "Todo estaba bien. Y ese era justamente el problema, solo que en ese momento él todavía no lo sabía.",
+      "Su primer día de trabajo estaba tan nervioso que leía cada línea del razonamiento de los agentes como si fuera una novela policial. Llenó tres páginas de un cuaderno con los tipos de errores que solían cometer los agentes, y le preguntaba una y otra vez a la instructora por qué el agente de ventas saludaba a los clientes con un tono tan extrañamente solemne. Ahora el cuaderno dormía en un cajón, con la tapa cubierta por una fina capa de polvo. Ya no lo abría. Ya no tenía nada que anotar."
+]
   }
 }
 

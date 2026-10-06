@@ -367,3 +367,8 @@ footer .author svg{flex:none}
 /* Chương sắp ra mắt: đồng hồ nhỏ sau tên chương */
 .soon-ic{display:inline-flex;vertical-align:-.12em;margin-left:.4rem;color:var(--muted);opacity:.8}
 .soon-ic .ic{width:.95em;height:.95em}
+
+/* Trang một câu trích */
+.quote-page{max-width:calc(46rem + 2*clamp(16px,4vw,40px));padding-block:clamp(56px,10vw,120px);display:flex;flex-direction:column;gap:1.6rem;align-items:flex-start;min-height:60vh}
+.quote-page blockquote{margin:0;font-family:var(--display);font-weight:900;font-size:clamp(2rem,5.5vw,3.6rem);line-height:1.12;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.quote-page .row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.6rem}

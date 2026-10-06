@@ -33,7 +33,7 @@ export default function Analytics() {
       const lang = document.documentElement.lang;
       const href = el.getAttribute("href") || "";
       const from = where(el);
-      const ch = href.match(/\/(?:chuong|chapter)\/(\d+)\//);
+      const ch = href.match(/\/(?:chuong|chapter|capitulo)\/(\d+)\//);
       if (el.classList.contains("theme-btn")) return track("theme_toggle", { lang });
       if (el.classList.contains("lang-btn")) return track("lang_switch", { lang, to: el.getAttribute("hreflang") || "" });
       if (el.classList.contains("share")) return track("share_quote", { lang, page: location.pathname });
@@ -41,7 +41,7 @@ export default function Analytics() {
       if (href.includes("newsletter-follow")) return track("subscribe_click", { lang, from, page: location.pathname });
       if (href.includes("a.co/") || href.includes("amazon.")) return track("buy_click", { lang, from, page: location.pathname });
       if (href.endsWith(".pdf")) return track("pdf_download", { lang, file: href.split("/").pop() });
-      if (ch) return track("chapter_open", { lang, chapter: Number(ch[1]), from, chapter_lang: href.includes("/chapter/") ? "en" : "vi" });
+      if (ch) return track("chapter_open", { lang, chapter: Number(ch[1]), from, chapter_lang: href.includes("/chapter/") ? "en" : href.includes("/capitulo/") ? "es" : "vi" });
     };
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });

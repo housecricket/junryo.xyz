@@ -7,8 +7,10 @@ Trang giới thiệu sách ba ngôn ngữ, xuất ra web tĩnh:
 | `/` | Tiếng Việt | `public/covers/vi.jpg` |
 | `/en/` | English | `public/covers/en.jpg` |
 | `/es/` | Español | `public/covers/en.jpg` (dùng chung bìa tiếng Anh) |
-| `/chuong/1/` … `/chuong/4/` | Đọc chương tiếng Việt | kèm nút tải PDF |
-| `/en/chapter/1/` | Đọc chương 1 tiếng Anh | kèm nút tải PDF |
+| `/chuong/1/` … | Đọc chương tiếng Việt | kèm nút tải PDF |
+| `/en/chapter/1/` … | Đọc chương tiếng Anh | PDF chương 1 |
+| `/es/capitulo/1/` … | Đọc chương tiếng Tây Ban Nha | |
+| `/trich/…`, `/en/quote/…`, `/es/cita/…` | Trang từng câu trích, kèm ảnh chia sẻ | |
 
 Bấm vào chương đã ra trong mục lục sẽ mở trang đọc. Ở bản tiếng Anh và Tây Ban Nha, chương chưa dịch
 sẽ mở bản tiếng Việt (có lá cờ nhỏ bên cạnh tên chương để báo trước).
@@ -109,7 +111,8 @@ Mỗi ngày khoảng 16 lần build theo lịch, nằm trong giới hạn gói m
 5. Cách thủ công: thêm số chương vào `PUBLISHED.vi` và tên PDF vào `PDF_FILES.vi` trong `lib/chapters.ts`.
 6. `git add -A && git commit -m "Chương 5" && git push` → trang tự cập nhật.
 
-Bản dịch tiếng Anh làm tương tự trong `content/chapters/en/` và `AVAILABLE.en`.
+Bản dịch làm tương tự trong `content/chapters/en/` và `content/chapters/es/` (cùng số chương, cùng phần đầu
+`start`/`release` nếu là chương mở dần). Quy ước dịch (tên riêng, tên mục, tiêu đề chương) ở `content/TRANSLATION_BRIEF.md`.
 
 ## Chương mới mở dần theo lịch
 

@@ -16,7 +16,7 @@ export const UI = {
     outNow: "Chương mới đã lên LinkedIn",
     quotesK: "Câu đáng nhớ",
     share: "Chia sẻ lên LinkedIn",
-    copied: "Đã chép câu trích. Dán vào bài đăng LinkedIn của bạn.",
+    copied: "Câu trích đã được điền vào bài đăng (và chép sẵn, nếu cần dán lại).",
     barText: "Thích chương này? Mỗi tuần một chương mới.",
     close: "Đóng",
     read: "Đã đọc",
@@ -50,7 +50,7 @@ export const UI = {
     outNow: "The new chapter is out on LinkedIn",
     quotesK: "Lines worth keeping",
     share: "Share on LinkedIn",
-    copied: "Quote copied. Paste it into your LinkedIn post.",
+    copied: "The quote is in your post (and copied, in case you need to paste it).",
     barText: "Enjoying this? A new chapter every week.",
     close: "Close",
     read: "Read",
@@ -73,7 +73,7 @@ export const UI = {
     altNote: (_l: string) => "Vietnamese original · English translation on the way",
     weekAlt: "Next week · Vietnamese original",
     status: (native: number, released: number) =>
-      `${native} of ${released} published chapters ${native === 1 ? "is" : "are"} in English so far. Translations follow the Vietnamese originals.`,
+      `The Vietnamese edition runs ahead: ${released} chapters out in Vietnamese, ${native} in English.`,
   },
   es: {
     nextK: "Siguiente capítulo",
@@ -85,7 +85,7 @@ export const UI = {
     outNow: "El nuevo capítulo ya está en LinkedIn",
     quotesK: "Frases para recordar",
     share: "Compartir en LinkedIn",
-    copied: "Frase copiada. Pégala en tu publicación de LinkedIn.",
+    copied: "La frase ya está en tu publicación (y copiada, por si hace falta pegarla).",
     barText: "¿Te gusta? Un capítulo nuevo cada semana.",
     close: "Cerrar",
     read: "Leído",
@@ -108,7 +108,7 @@ export const UI = {
     altNote: (l: string) =>
       l === "en" ? "Disponible en inglés · traducción al español en curso" : "Solo en vietnamita · traducción en curso",
     weekAlt: "Próxima semana · original en vietnamita",
-    status: (_native: number, released: number) =>
-      `Aún no hay capítulos en español. El capítulo 1 está en inglés y los capítulos 2 a ${released}, en vietnamita.`,
+    status: (native: number, released: number) =>
+      `La edición en vietnamita va por delante: ${released} capítulos en vietnamita, ${native} en español.`,
   },
 } satisfies Record<Lang, unknown>;

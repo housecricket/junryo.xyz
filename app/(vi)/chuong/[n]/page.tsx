@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     alternates: { canonical: SITE_URL + chapterPath("vi", n) },
-    openGraph: { title, url: SITE_URL + chapterPath("vi", n), type: "article" },
+    openGraph: { title, url: SITE_URL + chapterPath("vi", n), type: "article", images: ["/covers/vi.jpg"] },
   };
 }
 

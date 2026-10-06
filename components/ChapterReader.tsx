@@ -9,6 +9,7 @@ import SubscriberCount from "./SubscriberCount";
 import { countAt } from "@/lib/subscribers";
 import { buildNow } from "@/lib/schedule";
 import Quotes from "./Quotes";
+import { quotePath } from "@/lib/quotes";
 import ReadingAids from "./ReadingAids";
 import ThemeToggle from "./ThemeToggle";
 import TranslationNotice from "./TranslationNotice";
@@ -28,6 +29,8 @@ const UI = {
     soonP: "Chương mới lên LinkedIn mỗi tuần. Đăng ký để nhận ngay khi có, hoặc đặt mua sách trên Amazon.",
     sub: "Đăng ký trên LinkedIn",
     buy: "Đặt mua trên Amazon",
+    transP: "",
+    readVi: (n: number) => `Đọc chương ${n} →`,
   },
   en: {
     contents: "Contents",
@@ -39,6 +42,21 @@ const UI = {
     soonP: "A new chapter lands on LinkedIn every week. Subscribe to get it first, or get the book on Amazon.",
     sub: "Subscribe on LinkedIn",
     buy: "Buy on Amazon",
+    transP: "The English translation is on its way. The Vietnamese original is already out.",
+    readVi: (n: number) => `Read Chapter ${n} in Vietnamese →`,
+  },
+  es: {
+    contents: "Índice",
+    chapter: "Capítulo",
+    pdf: "Descargar PDF",
+    prev: "Capítulo anterior",
+    next: "Capítulo siguiente",
+    soonK: "Próximamente",
+    soonP: "Cada semana llega un capítulo nuevo a LinkedIn. Suscríbete para leerlo primero, o compra el libro en Amazon.",
+    sub: "Suscribirse en LinkedIn",
+    buy: "Comprar en Amazon",
+    transP: "La traducción al español está en camino. El original en vietnamita ya está publicado.",
+    readVi: (n: number) => `Leer el capítulo ${n} en vietnamita →`,
   },
 } as const;
 
@@ -54,8 +72,9 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
   const isDraft = !!chapter.draft;
   const prev = isDraft ? list[list.length - 1] ?? null : i > 0 ? list[i - 1] : null;
   // Chương đang viết (bản tiếng Việt) để mời đọc trước từ thẻ "Tuần sau"
-  const dn = draftNumber("vi");
-  const dInfo = dn ? loadChapter("vi", dn).draft : null;
+  const dLang: ReadLang = draftNumber(lang) ? lang : "vi";
+  const dn = draftNumber(dLang);
+  const dInfo = dn ? loadChapter(dLang, dn).draft : null;
   const next = i < list.length - 1 ? list[i + 1] : null;
   const pdf = pdfUrl(lang, chapter.n);
   const home = PATHS[lang];
@@ -125,12 +144,14 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         </div>
       )}
 
-      {!isDraft && <Quotes
-        lang={lang}
-        quotes={chapter.quotes}
-        url={SITE_URL + chapterPath(lang, chapter.n)}
-        source={`${c.title} · ${t.chapter} ${chapter.n}`}
-      />}
+      {!isDraft && (
+        <Quotes
+          lang={lang}
+          quotes={chapter.quotes.map((text, k) => ({ text, path: quotePath(lang, `${chapter.n}-${k + 1}`) }))}
+          source={`${c.title} · ${t.chapter} ${chapter.n}`}
+          siteUrl={SITE_URL}
+        />
+      )}
 
       {/* Chương kế tiếp: đã có thì mời đọc tiếp, chưa có thì "Tuần sau" + đếm ngược */}
       {(() => {
@@ -142,7 +163,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         return (
           <div className="wrap tz-outer">
           <section className={`teaser${next ? "" : " soon"}`}>
-            <div className="eyebrow">{next || (lang === "en" && AVAILABLE.vi.includes(nn)) ? x.nextK : draftHere ? x.thisWeek : x.weekK}</div>
+            <div className="eyebrow">{next || (lang !== "vi" && !AVAILABLE[lang].includes(nn) && AVAILABLE.vi.includes(nn)) ? x.nextK : draftHere ? x.thisWeek : x.weekK}</div>
             <div className="tz-n">
               {t.chapter} {nn}
             </div>
@@ -155,12 +176,12 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
                   {x.readN(next)} →
                 </Link>
               </div>
-            ) : lang === "en" && AVAILABLE.vi.includes(nn) ? (
+            ) : lang !== "vi" && !AVAILABLE[lang].includes(nn) && AVAILABLE.vi.includes(nn) ? (
               <>
-                <p className="desc small">The English translation is on its way. The Vietnamese original is already out.</p>
+                <p className="desc small">{t.transP}</p>
                 <div className="row">
                   <Link className="btn primary" href={chapterPath("vi", nn)}>
-                    Read Chapter {nn} in Vietnamese →
+                    {t.readVi(nn)}
                   </Link>
                   <a className="btn ghost" href={LINKEDIN_URL} {...ext}>
                     {t.sub} <ArrowIcon />
@@ -173,7 +194,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
                   <div className="tz-draft">
                     <span className="k">{x.writing}</span>
                     <ProgressMeter percent={dInfo!.percent} label={x.writing} />
-                    <Link className="lnk" href={chapterPath("vi", nn)}>
+                    <Link className="lnk" href={chapterPath(dLang, nn)}>
                       {x.readDraft} →
                     </Link>
                   </div>

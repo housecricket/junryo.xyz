@@ -1,7 +1,7 @@
 import { AMAZON_URL, LINKEDIN_URL, content, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
 import Link from "next/link";
-import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, type ReadLang } from "@/lib/chapters";
+import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, releasedCount, type ReadLang } from "@/lib/chapters";
 import { ProgressMeter } from "./WritingStatus";
 import { UI } from "@/lib/ui";
 import Countdown from "./Countdown";
@@ -29,7 +29,7 @@ function chapter(c: Content, i: number) {
 
 /** Chương n mở bằng ngôn ngữ nào: ưu tiên ngôn ngữ đang xem, rồi tiếng Anh, rồi tiếng Việt */
 function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | null {
-  const order: ReadLang[] = lang === "vi" ? ["vi"] : lang === "en" ? ["en", "vi"] : ["en", "vi"];
+  const order: ReadLang[] = lang === "vi" ? ["vi"] : lang === "en" ? ["en", "vi"] : ["es", "en", "vi"];
   for (const l of order) if (AVAILABLE[l].includes(n)) return { href: chapterPath(l, n), in: l };
   return null;
 }
@@ -40,15 +40,21 @@ export default function BookPage({ lang }: { lang: Lang }) {
   const subs0 = countAt(buildNow());
   let n = 0;
   // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
-  const upcoming = RELEASED < 14 ? RELEASED + 1 : null;
-  const upHook = lang === "vi" && upcoming ? loadChapter("vi", RELEASED).teaser?.hook ?? "" : "";
+  // Mỗi bản có nhịp riêng: tiếng Anh chậm 1 chương, tiếng Tây Ban Nha chậm 2 chương so với tiếng Việt
+  const rel = releasedCount(lang);
+  const upcoming = rel < 14 ? rel + 1 : null;
+  const upHook = upcoming && rel > 0 ? loadChapter(lang, rel).teaser?.hook ?? "" : "";
   // Bản tiếng Anh / Tây Ban Nha: bao nhiêu chương đã có bằng chính ngôn ngữ này
-  const nativeCount = lang === "vi" ? RELEASED : lang === "en" ? AVAILABLE.en.filter((k) => k <= RELEASED).length : 0;
-  const translated = lang === "vi";
+  const nativeCount = rel;
+  // Có chương đã ra bằng tiếng Việt mà bản này chưa có (không tính chương đang lên dần)?
+  const hasAlt = Array.from({ length: RELEASED }, (_, k) => k + 1).some((k) => k > rel && k !== draftNumber(lang));
+  const translated = rel >= RELEASED;
   // Chương đang viết (bản nháp tiếng Việt)
-  const dn = draftNumber("vi");
-  const dInfo = dn ? loadChapter("vi", dn).draft : null;
-  const draftHref = dn ? chapterPath("vi", dn) + (lang === "vi" ? "" : `#from-${lang}`) : "";
+  // Chương đang lên dần: ưu tiên bản của ngôn ngữ đang xem, không có thì bản tiếng Việt
+  const dLang: ReadLang = draftNumber(lang) ? lang : "vi";
+  const dn = draftNumber(dLang);
+  const dInfo = dn ? loadChapter(dLang, dn).draft : null;
+  const draftHref = dn ? chapterPath(dLang, dn) + (dLang === lang ? "" : `#from-${lang}`) : "";
 
   return (
     <>
@@ -87,12 +93,12 @@ export default function BookPage({ lang }: { lang: Lang }) {
         <section className="next-strip">
           <div className="wrap in">
             <div className="ns-t">
-              <span className="eyebrow">{dn === upcoming ? (translated ? x.thisWeek : x.thisWeekAlt) : translated ? x.weekK : x.weekAlt}</span>
+              <span className="eyebrow">{dn === upcoming ? x.thisWeek : x.weekK}</span>
               <span className="ns-title">
                 {x.chapter} {upcoming} · {c.c[upcoming - 1]}
               </span>
               {upHook && <span className="ns-hook" dangerouslySetInnerHTML={{ __html: upHook }} />}
-              {!translated && <span className="ns-hook">{x.status(nativeCount, RELEASED)}</span>}
+              {!translated && <span className="ns-hook ns-status">{x.status(rel, RELEASED)}</span>}
               {dn === upcoming && dInfo && (
                 <span className="ns-draft">
                   <span className="k">{x.writing}</span>
@@ -208,7 +214,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
                 {translated ? c.ready : x.legendNative}
               </span>
             )}
-            {!translated && (
+            {hasAlt && (
               <span>
                 <Flag lang="vi" />
                 {x.legendAlt}
@@ -241,15 +247,15 @@ export default function BookPage({ lang }: { lang: Lang }) {
                     const target = out ? readTarget(lang, i + 1) : null;
                     const alt = !!target && target.in !== lang; // chưa dịch sang ngôn ngữ đang xem
                     const href = target ? (alt ? `${target.href}#from-${lang}` : target.href) : "";
-                    const drafting = !out && dn === i + 1 && dInfo;
+                    const drafting = dn === i + 1 && dInfo && (dLang === lang || !out);
                     if (drafting) {
                       return (
                         <li key={i} className="drafting" data-ch={i + 1}>
                           <span className="n">{String(i + 1).padStart(2, "0")}</span>
                           <span className="t">
-                            <Link href={draftHref} className="tl" hrefLang="vi">
+                            <Link href={draftHref} className="tl" hrefLang={dLang}>
                               <Html html={ch.title} />
-                              {lang !== "vi" && (
+                              {dLang !== lang && (
                                 <span className="in-lang" title={c.other_lang.vi}>
                                   <Flag lang="vi" />
                                 </span>
@@ -315,7 +321,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
               ))}
             </div>
             <div className="more">
-              <p>{c.ex_more}</p>
+              <p>{c.ex_more.replace("{n}", String(rel))}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: ".8rem", justifyContent: "center" }}>
                 <Link className="btn primary" href={readTarget(lang, 1)!.href}>
                   {c.cont}
