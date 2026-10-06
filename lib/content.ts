@@ -5,8 +5,6 @@ export const LINKEDIN_URL = "https://www.linkedin.com/build-relation/newsletter-
 export const LANGS = ["vi", "en", "es"] as const;
 export type Lang = (typeof LANGS)[number];
 
-export const RELEASED = 4; // số chương đã ra: tăng lên mỗi khi có chương mới
-
 export const content = {
   "vi": {
     "cont": "Đọc tiếp chương 1",

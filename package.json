@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/prepare-release.mjs",
     "build": "next build",
     "start": "npx serve out"
   },

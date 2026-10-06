@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import ChapterReader from "@/components/ChapterReader";
-import { AVAILABLE, chapterPath, loadChapter } from "@/lib/chapters";
+import { chapterPath, loadChapter, readablePages } from "@/lib/chapters";
 import { content } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return AVAILABLE.en.map((n) => ({ n: String(n) }));
+  return readablePages("en").map((n) => ({ n: String(n) }));
 }
 
 type Props = { params: Promise<{ n: string }> };

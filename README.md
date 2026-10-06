@@ -78,21 +78,74 @@ Từ đó, mỗi lần sửa và `git push` lên `master`, trang tự cập nh�
 1. Đặt file Markdown vào `content/chapters/vi/5.md` (dòng đầu dạng `# Chương 5 – Tên chương`).
 2. Ảnh minh hoạ đặt vào `public/illus/` và gọi trong bài bằng `![Chú thích](Minh_hoa_Ch5_Ten.jpg)`.
 3. PDF đặt vào `public/pdf/chuong-5.pdf`.
-4. Trong `lib/chapters.ts`: thêm `5` vào `AVAILABLE.vi` và `5: "chuong-5.pdf"` vào `PDF_FILES.vi`.
-5. Trong `lib/content.ts`: đổi `RELEASED` thành `5`.
+4. Cách tự động: thêm phần đầu `start`/`release` (xem mục "Chương mới mở dần theo lịch") và đặt PDF vào `content/pdf/`.
+5. Cách thủ công: thêm số chương vào `PUBLISHED.vi` và tên PDF vào `PDF_FILES.vi` trong `lib/chapters.ts`.
 6. `git add -A && git commit -m "Chương 5" && git push` → trang tự cập nhật.
 
 Bản dịch tiếng Anh làm tương tự trong `content/chapters/en/` và `AVAILABLE.en`.
+
+## Chương mới mở dần theo lịch
+
+Chương mới được viết sẵn và đặt trong `content/chapters/vi/<số>.md`, với phần đầu:
+
+```
+---
+start: 2026-10-06T18:30:00+07:00     ← bắt đầu mở dần
+release: 2026-10-12T08:00:00+07:00   ← đủ chương, kèm PDF
+---
+```
+
+PDF của chương đặt sẵn ở `content/pdf/chuong-<số>.pdf` (chưa công khai cho tới giờ phát hành).
+
+Từ lúc `start`, mỗi ngày trong hai khung giờ **6:30–7:30 sáng** và **18:30–23:30 tối** (giờ Việt Nam, sửa ở
+`lib/schedule.ts` → `WINDOWS`), GitHub tự build lại trang mỗi 30 phút và mở thêm một phần chương, chia đều
+theo thời gian tới lúc `release`. Người đọc thấy:
+
+- Mục lục và dải "Tuần sau": thanh **% · Đang lên dần** và link "Đọc phần đã mở".
+- Trang chương: phần đã mở, số chữ, con trỏ nhấp nháy ở dòng cuối, và trạng thái
+  **● Đang mở thêm phần mới** (trong khung giờ) hoặc **Phần tiếp theo mở lúc 18:30 hôm nay** (ngoài khung giờ).
+- Đúng giờ `release`: chương thành chương đã phát hành, đủ câu đáng nhớ, thẻ "Tuần sau" và nút tải PDF.
+
+Bạn không cần làm gì thêm trong tuần. Chuẩn bị chương sau: thả file `.md` (có `start`/`release` của tuần sau)
+và PDF vào đúng chỗ, rồi push.
+
+Xem trước trạng thái ở một thời điểm bất kỳ:
+
+```bash
+BUILD_NOW=2026-10-08T21:00:00+07:00 npm run build && npx serve out
+```
+
+Lưu ý: GitHub tạm dừng lịch chạy tự động nếu repo không có commit nào trong 60 ngày; nếu repo để công khai,
+người đọc rành GitHub có thể xem trước file chương trong repo.
+
+## Số người đăng ký bản tin
+
+Mỗi ngày mở `content/subscribers.json` và thêm một dòng với số người đăng ký thật của ngày đó:
+
+```json
+[
+  { "date": "2026-10-05", "count": 800 },
+  { "date": "2026-10-06", "count": 1134 },
+  { "date": "2026-10-07", "count": 1290 }
+]
+```
+
+Trong ngày ghi ở dòng mới nhất (giờ Việt Nam), con số trên trang tăng dần từ số của ngày trước lên số mới:
+trình duyệt kiểm tra mỗi phút, có người mới thì số nhảy lên. Tăng nhanh vào giờ người ta hay đọc LinkedIn
+(sáng, tối), chậm vào ban đêm, và không bao giờ vượt quá số thật. Qua hết ngày thì đứng ở số mới cho tới khi
+bạn thêm dòng tiếp theo. Thêm dòng xong thì push như thường; không cần sửa gì khác.
+
+Con số hiện ở: phần đầu trang chủ, dải "Tuần sau", ô "Từng chương, miễn phí" cuối trang chủ và thẻ cuối chương.
 
 ## Những phần giữ chân người đọc
 
 | Phần | Lấy dữ liệu từ đâu | Sửa ở đâu |
 |---|---|---|
 | Đếm ngược chương mới (trang chủ và cuối chương mới nhất) | Lịch ra chương | `lib/ui.ts` → `RELEASE` (mặc định thứ Hai 8:00 giờ Việt Nam) |
+| Mở dần chương mới theo khung giờ | Phần đầu file chương (`start`, `release`) | `lib/schedule.ts` → `WINDOWS` |
 | Thẻ "Tuần sau" cuối chương | Phần `## Tuần sau` cuối mỗi file chương | Viết trong file `.md` của chương |
 | Câu đáng nhớ + nút chia sẻ LinkedIn | Các câu in đậm trong `## Sổ tay của Thắng Tất` | Viết trong file `.md` của chương |
 | Thanh mời đăng ký khi đọc quá nửa chương, thanh tiến độ | Tự động | `components/ReadingAids.tsx` |
-| Dấu ✓ chương đã đọc trong mục lục | Lưu trong trình duyệt người đọc | Tự động |
 
 Nhớ viết phần `## Tuần sau` cho chương mới nhất trước khi đăng: đó là trailer mà người đọc thấy ngay khi đọc xong.
 
@@ -101,7 +154,7 @@ Nhớ viết phần `## Tuần sau` cho chương mới nhất trước khi đăn
 | Muốn sửa | Mở file |
 |---|---|
 | Chữ ở cả ba ngôn ngữ, mục lục, đoạn đọc thử | `lib/content.ts` |
-| Đánh dấu thêm chương đã ra | `lib/content.ts` → tăng `RELEASED` |
+| Đánh dấu thêm chương đã ra | tự động theo `release`, hoặc `lib/chapters.ts` → `PUBLISHED` |
 | Link Amazon, link LinkedIn | `lib/content.ts` → `AMAZON_URL`, `LINKEDIN_URL` |
 | Ảnh bìa | thay file trong `public/covers/` |
 | Màu, phông, khoảng cách | `app/globals.css` (phần `:root` ở đầu file) |

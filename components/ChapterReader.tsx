@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { AMAZON_URL, LINKEDIN_URL, content } from "@/lib/content";
-import { AVAILABLE, chapterPath, pdfUrl, type Chapter, type ReadLang } from "@/lib/chapters";
+import { AVAILABLE, chapterPath, draftNumber, loadChapter, pdfUrl, type Chapter, type ReadLang } from "@/lib/chapters";
+import WritingStatus, { ProgressMeter } from "./WritingStatus";
 import { PATHS, SITE_URL } from "@/lib/site";
 import { UI as UIX } from "@/lib/ui";
 import Countdown from "./Countdown";
+import SubscriberCount from "./SubscriberCount";
+import { countAt } from "@/lib/subscribers";
+import { buildNow } from "@/lib/schedule";
 import Quotes from "./Quotes";
 import ReadingAids from "./ReadingAids";
 import TranslationNotice from "./TranslationNotice";
@@ -45,11 +49,16 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
   const c = content[lang];
   const list = AVAILABLE[lang];
   const i = list.indexOf(chapter.n);
-  const prev = i > 0 ? list[i - 1] : null;
+  const isDraft = !!chapter.draft;
+  const prev = isDraft ? list[list.length - 1] ?? null : i > 0 ? list[i - 1] : null;
+  // Chương đang viết (bản tiếng Việt) để mời đọc trước từ thẻ "Tuần sau"
+  const dn = draftNumber("vi");
+  const dInfo = dn ? loadChapter("vi", dn).draft : null;
   const next = i < list.length - 1 ? list[i + 1] : null;
   const pdf = pdfUrl(lang, chapter.n);
   const home = PATHS[lang];
   const x = UIX[lang];
+  const subs0 = countAt(buildNow());
 
   return (
     <>
@@ -65,34 +74,65 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
       {lang === "vi" && <TranslationNotice />}
 
       <header className="reader-head wrap">
-        <div className="eyebrow">{c[partOf(chapter.n)]}</div>
+        <div className="eyebrow">
+          {c[partOf(chapter.n)]}
+          {isDraft && <span className="draft-tag">{x.writing}</span>}
+        </div>
         <div className="chap-n">
           {t.chapter} {chapter.n}
         </div>
         <h1>{chapter.title}</h1>
         <div className="rule" aria-hidden="true" />
-        {pdf && (
+        {isDraft && chapter.draft && (
+          <>
+            <WritingStatus lang={lang} percent={chapter.draft.percent} words={chapter.draft.words} total={chapter.draft.total} />
+            <p className="draft-note">{x.draftNote}</p>
+          </>
+        )}
+        {pdf && !isDraft && (
           <a className="btn ghost pdf" href={pdf} {...ext}>
             {t.pdf} <ArrowIcon />
           </a>
         )}
       </header>
 
-      <article className="reader wrap" dangerouslySetInnerHTML={{ __html: chapter.html }} />
+      <article className={`reader wrap${isDraft ? " is-draft" : ""}`} dangerouslySetInnerHTML={{ __html: chapter.html }} />
 
-      <Quotes
+      {isDraft && chapter.draft && (
+        <div className="wrap tz-outer">
+          <section className="teaser draft-end">
+            <div className="eyebrow">{x.writing}</div>
+            <h2>{x.reachedEnd}</h2>
+            <WritingStatus lang={lang} percent={chapter.draft.percent} compact />
+            <Countdown lang={lang} />
+            <SubscriberCount lang={lang} initial={subs0} />
+            <p className="desc small">{t.soonP}</p>
+            <div className="row">
+              <a className="btn primary" href={LINKEDIN_URL} {...ext}>
+                {t.sub} <ArrowIcon />
+              </a>
+              <a className="btn ghost" href={AMAZON_URL} {...ext}>
+                {t.buy} <ArrowIcon />
+              </a>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {!isDraft && <Quotes
         lang={lang}
         quotes={chapter.quotes}
         url={SITE_URL + chapterPath(lang, chapter.n)}
         source={`${c.title} · ${t.chapter} ${chapter.n}`}
-      />
+      />}
 
       {/* Chương kế tiếp: đã có thì mời đọc tiếp, chưa có thì "Tuần sau" + đếm ngược */}
       {(() => {
         const tz = chapter.teaser;
         const nn = tz?.n ?? chapter.n + 1;
         const nTitle = tz?.title ?? c.c[chapter.n];
-        if (chapter.n >= 14) return null;
+        if (chapter.n >= 14 || isDraft) return null;
+        const draftHere = !next && dn === nn && dInfo;
         return (
           <div className="wrap tz-outer">
           <section className={`teaser${next ? "" : " soon"}`}>
@@ -123,7 +163,17 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
               </>
             ) : (
               <>
+                {draftHere && (
+                  <div className="tz-draft">
+                    <span className="k">{x.writing}</span>
+                    <ProgressMeter percent={dInfo!.percent} label={x.writing} />
+                    <Link className="lnk" href={chapterPath("vi", nn)}>
+                      {x.readDraft} →
+                    </Link>
+                  </div>
+                )}
                 <Countdown lang={lang} />
+                <SubscriberCount lang={lang} initial={subs0} />
                 <p className="desc small">{t.soonP}</p>
                 <div className="row">
                   <a className="btn primary" href={LINKEDIN_URL} {...ext}>

@@ -1,9 +1,13 @@
-import { AMAZON_URL, LINKEDIN_URL, RELEASED, content, type Content, type Lang } from "@/lib/content";
+import { AMAZON_URL, LINKEDIN_URL, content, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
 import Link from "next/link";
-import { AVAILABLE, chapterPath, loadChapter, type ReadLang } from "@/lib/chapters";
+import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, type ReadLang } from "@/lib/chapters";
+import { ProgressMeter } from "./WritingStatus";
 import { UI } from "@/lib/ui";
 import Countdown from "./Countdown";
+import SubscriberCount from "./SubscriberCount";
+import { countAt } from "@/lib/subscribers";
+import { buildNow } from "@/lib/schedule";
 import Html from "./Html";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
@@ -32,6 +36,7 @@ function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | nul
 export default function BookPage({ lang }: { lang: Lang }) {
   const c = content[lang];
   const x = UI[lang];
+  const subs0 = countAt(buildNow());
   let n = 0;
   // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
   const upcoming = RELEASED < 14 ? RELEASED + 1 : null;
@@ -39,6 +44,10 @@ export default function BookPage({ lang }: { lang: Lang }) {
   // Bản tiếng Anh / Tây Ban Nha: bao nhiêu chương đã có bằng chính ngôn ngữ này
   const nativeCount = lang === "vi" ? RELEASED : lang === "en" ? AVAILABLE.en.filter((k) => k <= RELEASED).length : 0;
   const translated = lang === "vi";
+  // Chương đang viết (bản nháp tiếng Việt)
+  const dn = draftNumber("vi");
+  const dInfo = dn ? loadChapter("vi", dn).draft : null;
+  const draftHref = dn ? chapterPath("vi", dn) + (lang === "vi" ? "" : `#from-${lang}`) : "";
 
   return (
     <>
@@ -61,6 +70,9 @@ export default function BookPage({ lang }: { lang: Lang }) {
               </a>
             </div>
             <Html as="p" className="note" html={c.note} />
+            <p className="note">
+              <SubscriberCount lang={lang} initial={subs0} />
+            </p>
           </div>
           <figure className="cover">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -80,9 +92,19 @@ export default function BookPage({ lang }: { lang: Lang }) {
               </span>
               {upHook && <span className="ns-hook" dangerouslySetInnerHTML={{ __html: upHook }} />}
               {!translated && <span className="ns-hook">{x.status(nativeCount, RELEASED)}</span>}
+              {dn === upcoming && dInfo && (
+                <span className="ns-draft">
+                  <span className="k">{x.writing}</span>
+                  <ProgressMeter percent={dInfo.percent} label={x.writing} />
+                  <Link className="lnk" href={draftHref}>
+                    {x.readDraft} →
+                  </Link>
+                </span>
+              )}
             </div>
             <div className="ns-a">
               <Countdown lang={lang} />
+              <SubscriberCount lang={lang} initial={subs0} variant="pill" />
               <a className="btn primary" href={LINKEDIN_URL} {...ext}>
                 {c.sub} <ArrowIcon />
               </a>
@@ -191,6 +213,16 @@ export default function BookPage({ lang }: { lang: Lang }) {
                 {x.legendAlt}
               </span>
             )}
+            {dInfo && (
+              <span>
+                <span className="meter mini" aria-hidden="true">
+                  <span className="bar">
+                    <span style={{ width: "40%" }} />
+                  </span>
+                </span>
+                {x.writing}
+              </span>
+            )}
             <span className="soon-swatch">{c.soon}</span>
           </div>
           <div className="parts">
@@ -205,6 +237,29 @@ export default function BookPage({ lang }: { lang: Lang }) {
                     const target = out ? readTarget(lang, i + 1) : null;
                     const alt = !!target && target.in !== lang; // chưa dịch sang ngôn ngữ đang xem
                     const href = target ? (alt ? `${target.href}#from-${lang}` : target.href) : "";
+                    const drafting = !out && dn === i + 1 && dInfo;
+                    if (drafting) {
+                      return (
+                        <li key={i} className="drafting" data-ch={i + 1}>
+                          <span className="n">{String(i + 1).padStart(2, "0")}</span>
+                          <span className="t">
+                            <Link href={draftHref} className="tl" hrefLang="vi">
+                              <Html html={ch.title} />
+                              {lang !== "vi" && (
+                                <span className="in-lang" title={c.other_lang.vi}>
+                                  <Flag lang="vi" />
+                                </span>
+                              )}
+                            </Link>
+                          </span>
+                          <span className="dr">
+                            <ProgressMeter percent={dInfo.percent} label={x.writing} />
+                            <span>{x.writing}</span>
+                          </span>
+                          <Html className="th" html={ch.theory} />
+                        </li>
+                      );
+                    }
                     return (
                       <li key={i} className={out ? (alt ? "out alt" : "out") : undefined} data-ch={i + 1}>
                         <span className="n">{String(i + 1).padStart(2, "0")}</span>
@@ -295,6 +350,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
               <div className="ob">
                 <span className="k">{c.o2k}</span>
                 <Html className="v" html={c.o2v} />
+                <SubscriberCount lang={lang} initial={subs0} />
                 <a className="btn ghostw" href={LINKEDIN_URL} {...ext}>
                   <span>{c.o2b}</span> <ArrowIcon />
                 </a>
