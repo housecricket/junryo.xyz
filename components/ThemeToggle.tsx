@@ -11,7 +11,16 @@ const LABEL = {
 
 export default function ThemeToggle({ lang }: { lang: Lang }) {
   const [dark, setDark] = useState(false);
-  useEffect(() => setDark(document.documentElement.getAttribute("data-theme") === "dark"), []);
+  // Vào trang chương: áp lại lựa chọn đọc đêm đã lưu
+  useEffect(() => {
+    let d = false;
+    try {
+      d = localStorage.getItem("mptcl:theme") === "dark";
+    } catch {}
+    if (d) document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
+    setDark(d);
+  }, []);
 
   const toggle = () => {
     const next = !dark;

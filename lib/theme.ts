@@ -1,2 +1,2 @@
-/** Chạy ngay đầu trang: bật chế độ đọc đêm nếu người đọc đã chọn trước đó (không nhấp nháy nền trắng) */
-export const THEME_SCRIPT = `try{if(localStorage.getItem("mptcl:theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}`;
+/** Chế độ đọc đêm chỉ áp dụng ở trang đọc chương. Chạy ngay đầu trang để không nhấp nháy nền trắng. */
+export const THEME_SCRIPT = `try{if(/\\/(chuong|chapter)\\//.test(location.pathname)&&localStorage.getItem("mptcl:theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}`;

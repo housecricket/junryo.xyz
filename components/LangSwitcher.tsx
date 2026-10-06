@@ -1,9 +1,9 @@
 "use client";
+import { useEffect } from "react";
 import Link from "next/link";
 import { LANGS, type Lang } from "@/lib/content";
 import { PATHS } from "@/lib/site";
 import { Flag } from "./Icons";
-import ThemeToggle from "./ThemeToggle";
 
 const NAMES: Record<Lang, string> = { vi: "Tiếng Việt", en: "English", es: "Español" };
 
@@ -15,6 +15,10 @@ function remember(l: Lang) {
 }
 
 export default function LangSwitcher({ current }: { current: Lang }) {
+  // Trang chủ luôn nền trắng; đọc đêm chỉ dùng trong trang chương
+  useEffect(() => {
+    document.documentElement.removeAttribute("data-theme");
+  }, []);
   return (
     <nav className="wrap lang" aria-label="Ngôn ngữ / Language / Idioma">
       <div role="group">
@@ -33,7 +37,6 @@ export default function LangSwitcher({ current }: { current: Lang }) {
           </Link>
         ))}
       </div>
-      <ThemeToggle lang={current} />
     </nav>
   );
 }
