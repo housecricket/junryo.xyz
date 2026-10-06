@@ -2,6 +2,7 @@ import { AMAZON_URL, LINKEDIN_URL, RELEASED, content, type Content, type Lang } 
 import { COVERS } from "@/lib/site";
 import Html from "./Html";
 import LangSwitcher from "./LangSwitcher";
+import Portrait, { type Who } from "./Portrait";
 import { ArrowIcon, BookIcon, LegendDot, MailIcon, OpenBookIcon } from "./Icons";
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
@@ -99,12 +100,13 @@ export default function BookPage({ lang }: { lang: Lang }) {
           <div className="cast">
             {(
               [
-                ["Trần Thắng Tất", c.r1, c.d1],
-                ["Nguyễn Lực Sỹ", c.r2, c.d2],
-                ["Trung", c.r3, c.d3],
+                ["tat", "Trần Thắng Tất", c.r1, c.d1],
+                ["sy", "Nguyễn Lực Sỹ", c.r2, c.d2],
+                ["trung", "Trung", c.r3, c.d3],
               ] as const
-            ).map(([name, role, desc]) => (
+            ).map(([who, name, role, desc]) => (
               <article className="person" key={name}>
+                <Portrait who={who as Who} />
                 <div className="role">{role}</div>
                 <h3>{name}</h3>
                 <p>{desc}</p>
