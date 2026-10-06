@@ -101,9 +101,9 @@ section.s{padding-block:clamp(52px,8vw,96px)}
 .part .n{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted);padding-top:.15rem}
 .part .t{font-weight:600;color:var(--teal);line-height:1.35}
 .part .th{grid-column:2;font-family:var(--sans);font-size:.78rem;color:var(--muted);line-height:1.45}
-.part li.out .n{color:var(--accent);font-weight:700}
+.part li.out .n{color:var(--ink);font-weight:600}
 .tag{display:inline-block;font-family:var(--sans);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:.15em .55em;border-radius:2px;margin-left:.4rem;vertical-align:.15em;background:var(--accent);color:var(--on-accent)}
-.part li:not(.out) .t{color:var(--ink);font-weight:400}
+.part li:not(.out) .t{color:var(--muted);font-weight:400}
 .ending{margin-top:2.2rem;font-style:italic;color:var(--muted);max-width:var(--measure)}
 .ending b{font-style:normal;color:var(--teal)}
 
@@ -142,15 +142,11 @@ footer .wrap{border-top:1px solid var(--band-line);padding-top:1.4rem;display:fl
   .cast,.anat,.parts{grid-template-columns:minmax(0,1fr)}
   .dots{width:100%;max-width:15rem}
 }
-.part li.out .n{display:inline-flex;align-items:center;justify-content:center;width:1.65rem;height:1.65rem;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.72rem;font-weight:700;padding:0}
-.part li:not(.out) .n{display:inline-flex;align-items:center;justify-content:center;width:1.65rem;height:1.65rem;border-radius:50%;border:1px solid var(--line);font-size:.72rem;padding:0}
 .rd{display:inline-flex;vertical-align:-.2em;margin-left:.45rem;color:var(--ink)}
 .ic{width:1.05em;height:1.05em}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .legend{display:flex;flex-wrap:wrap;gap:1.4rem;font-family:var(--sans);font-size:.8rem;color:var(--muted);margin-top:-1rem;margin-bottom:2rem}
 .legend span{display:inline-flex;align-items:center;gap:.5em}
-.legend .dot{width:.9rem;height:.9rem;border-radius:50%;background:var(--ink)}
-.legend .dot.o{background:transparent;border:1px solid var(--muted)}
 .part li{align-items:start}
 .btn.ghostw{color:var(--band-ink);border-color:var(--band-ink);background:transparent}
 .note a{text-underline-offset:.2em}
@@ -287,17 +283,17 @@ footer.reader-foot{padding-top:2.4rem}
 @media (max-width:560px){.sticky-cta p{flex-basis:100%}.sticky-cta .act{width:100%}.sticky-cta .btn{flex:1;justify-content:center}}
 
 /* Mục lục: chương đã đọc */
-.part li.is-read .n{font-size:0}
-.part li.is-read .n::after{content:"✓";font-size:.8rem}
 
 /* Chương chưa dịch sang ngôn ngữ đang xem (bản EN/ES) */
-.legend .dot.half{width:.9rem;height:.9rem;border-radius:50%;border:1px dashed var(--ink);background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 4px)}
-.part li.out.alt .n{background:repeating-linear-gradient(45deg,var(--line) 0 2px,transparent 2px 5px);color:var(--ink);border:1px dashed var(--ink)}
-.part li.out.alt .t{color:var(--muted)}
-.part li.out.alt .tl{color:var(--muted)}
 .alt-note{grid-column:2;font-family:var(--sans);font-size:.72rem;font-style:italic;color:var(--muted);line-height:1.4}
 .translation-note{max-width:calc(var(--measure) + 2*clamp(16px,4vw,40px));margin-top:1.2rem}
 .translation-note .in{border:1px solid var(--ink);padding:1rem 1.2rem;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;font-family:var(--sans);font-size:.88rem;line-height:1.5}
 .translation-note .flag{width:1.4rem;height:.93rem;opacity:1}
 .translation-note p{margin:0;flex:1 1 18rem}
 .translation-note a{color:var(--ink);font-weight:600;text-underline-offset:.2em}
+
+/* Mục lục: một hệ ký hiệu duy nhất. Số chương là chữ thường; trạng thái là icon nhỏ sau tên chương.
+   Sách mở = đọc ngay · Cờ = mở bản ngôn ngữ khác · Không icon, chữ mờ = sắp ra mắt */
+.legend .soon-swatch{font-family:var(--serif);color:var(--muted)}
+.in-lang{opacity:1}
+.legend .flag,.in-lang .flag{width:1.05rem;height:.7rem;opacity:1}

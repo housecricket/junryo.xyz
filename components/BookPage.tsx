@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AVAILABLE, chapterPath, loadChapter, type ReadLang } from "@/lib/chapters";
 import { UI } from "@/lib/ui";
 import Countdown from "./Countdown";
-import { ReadMarks } from "./ReadingAids";
 import Html from "./Html";
 import LangSwitcher from "./LangSwitcher";
 import Portrait, { type Who } from "./Portrait";
@@ -188,14 +187,11 @@ export default function BookPage({ lang }: { lang: Lang }) {
             )}
             {!translated && (
               <span>
-                <i className="dot half" />
+                <Flag lang="vi" />
                 {x.legendAlt}
               </span>
             )}
-            <span>
-              <i className="dot o" />
-              {c.soon}
-            </span>
+            <span className="soon-swatch">{c.soon}</span>
           </div>
           <div className="parts">
             {PARTS.map(([key, count]) => (
@@ -230,7 +226,6 @@ export default function BookPage({ lang }: { lang: Lang }) {
                             <Html html={ch.title} />
                           )}
                         </span>
-                        {alt && target && <span className="alt-note">{x.altNote(target.in)}</span>}
                         <Html className="th" html={ch.theory} />
                       </li>
                     );
@@ -240,7 +235,6 @@ export default function BookPage({ lang }: { lang: Lang }) {
             ))}
           </div>
           <Html as="p" className="ending" html={c.ending} />
-          <ReadMarks label={x.read} />
         </div>
       </section>
 
