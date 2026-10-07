@@ -133,8 +133,11 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         </span>
       </nav>
 
-      {lang === "vi" && <TranslationNotice />}
-      {lang === "en" && <TranslationNotice reading="en" />}
+      <TranslationNotice
+        reading={lang}
+        n={chapter.n}
+        have={(["vi", "en", "es", "ja", "zh"] as ReadLang[]).filter((l) => AVAILABLE[l].includes(chapter.n))}
+      />
 
       <header className="reader-head wrap">
         <div className="eyebrow">

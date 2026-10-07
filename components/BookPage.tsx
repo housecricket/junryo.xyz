@@ -261,7 +261,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
               </span>
             )}
             {hasAlt && (
-              <span>
+              <span className="dim">
                 <Flag lang="vi" />
                 {x.legendAlt}
               </span>
@@ -312,15 +312,15 @@ export default function BookPage({ lang }: { lang: Lang }) {
                             <Link href={draftHref} className="tl" hrefLang={dLang}>
                               <Html html={ch.title} />
                               {dLang !== lang && (
-                                <span className="in-lang" title={c.other_lang.vi}>
+                                <span className="in-lang dim" title={c.other_lang.vi}>
                                   <Flag lang="vi" />
                                 </span>
                               )}
                             </Link>
                             {alsoIn(lang, i + 1, dLang).length > 0 && (
-                              <span className="also">
+                              <span className={dLang !== lang ? "also dim" : "also"}>
                                 {alsoIn(lang, i + 1, dLang).map((l) => (
-                                  <Link key={l} href={chapterPath(l, i + 1)} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
+                                  <Link key={l} href={`${chapterPath(l, i + 1)}#from-${lang}`} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
                                     <Flag lang={l} />
                                   </Link>
                                 ))}
@@ -343,7 +343,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
                             <Link href={href} className="tl" hrefLang={target.in}>
                               <Html html={ch.title} />
                               {alt ? (
-                                <span className="in-lang" title={c.other_lang[target.in]}>
+                                <span className="in-lang dim" title={c.other_lang[target.in]}>
                                   <Flag lang={target.in} />
                                 </span>
                               ) : (
@@ -354,9 +354,9 @@ export default function BookPage({ lang }: { lang: Lang }) {
                             </Link>
                           ) : null}
                           {target && alsoIn(lang, i + 1, target.in).length > 0 && (
-                            <span className="also">
+                            <span className={alt ? "also dim" : "also"}>
                               {alsoIn(lang, i + 1, target.in).map((l) => (
-                                <Link key={l} href={chapterPath(l, i + 1)} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
+                                <Link key={l} href={`${chapterPath(l, i + 1)}#from-${lang}`} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
                                   <Flag lang={l} />
                                 </Link>
                               ))}

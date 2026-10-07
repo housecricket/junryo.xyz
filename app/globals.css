@@ -485,10 +485,14 @@ html[lang="zh-CN"] .excerpt .body p:first-child::first-letter{float:none;font-fa
 html[lang="zh-CN"] .hero h1 em{font-style:normal;font-weight:700;font-family:var(--font-noto-sc),"Noto Serif CJK SC","Songti SC",serif}
 /* Dòng báo "chưa dịch" của bản tiếng Trung khi hiện trên trang tiếng Việt / tiếng Anh */
 .translation-note:lang(zh){font-style:normal;line-break:strict}
-/* Cờ nhỏ ở mục lục: chương này cũng đã có bằng ngôn ngữ khác */
-.also{display:inline-flex;gap:.3rem;vertical-align:-.08em;margin-left:.55rem;padding-left:.55rem;border-left:1px solid var(--line,#ddd)}
-.also a{display:inline-flex;line-height:0;opacity:.7;transition:opacity .15s}
+/* Mục lục: cờ phía sau tên chương = chương này còn đọc được bằng những ngôn ngữ nào (bấm để mở bản đó).
+   Rõ nét khi chương đã có bằng ngôn ngữ đang xem; mờ đi khi chưa có (lúc ấy cờ chính cạnh tên chương mới là lối đọc). */
+.also{display:inline-flex;gap:.35rem;vertical-align:-.1em;margin-left:.55rem;padding-left:.55rem;border-left:1px solid var(--line)}
+.also a{display:inline-flex;line-height:0;transition:opacity .15s}
+.also .flag{width:1.05rem;height:.7rem;opacity:1}
+.also.dim a{opacity:.4}
 .also a:hover,.also a:focus-visible{opacity:1}
-.also .flag{width:.95rem;height:.63rem}
-.legend .also.lg{margin:0;padding:0;border:0;gap:.25rem}
-.legend .also.lg .flag{width:.95rem;height:.63rem;opacity:.7}
+.legend .also.lg{margin:0;padding:0;border:0;gap:.3rem}
+/* Chương chưa có bằng ngôn ngữ đang xem: mọi cờ đều mờ, kể cả cờ chính cạnh tên chương */
+.part .in-lang.dim .flag,.legend .dim .flag{opacity:.4}
+.part .tl:hover .in-lang.dim .flag,.part .tl:focus-visible .in-lang.dim .flag{opacity:1}
