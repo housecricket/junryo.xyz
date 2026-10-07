@@ -3,13 +3,50 @@ export const AMAZON_URL = "https://a.co/d/0jbHvq34";
 export const AUTHOR_URL = "https://www.linkedin.com/in/dangtrunganh";
 export const LINKEDIN_URL = "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7512726408108924930";
 
+// Bản tiếng Nhật (/ja/) đang ẩn: không có cờ trong LangSwitcher, không nằm trong hreflang,
+// không tự chuyển theo múi giờ, mọi trang đều noindex. Người đọc Nhật theo dõi trên note và chia sẻ lên X.
+export const NOTE_URL = process.env.NEXT_PUBLIC_NOTE_URL || "https://note.com/dangtrunganh/m/me3f2ade9009d";
+
+// Bản tiếng Trung giản thể (/zh/) cũng đang ẩn, y như bản tiếng Nhật. LinkedIn không dùng được ở Trung Quốc đại lục:
+// người đọc theo dõi qua tài khoản công chúng WeChat (bài viết hoặc trang mã QR) khi đã có, chia sẻ lên Weibo.
+export const WECHAT_URL = process.env.NEXT_PUBLIC_WECHAT_URL || "";
+
+/** Các ngôn ngữ công khai (hiện cờ trong LangSwitcher) */
 export const LANGS = ["vi", "en", "es"] as const;
-export type Lang = (typeof LANGS)[number];
+/** Các bản ẩn: noindex, không hreflang, không cờ, không tự chuyển theo múi giờ, không có link từ bản công khai */
+export const HIDDEN_LANGS = ["ja", "zh"] as const;
+/** Mọi ngôn ngữ có trang, kể cả bản ẩn */
+export const ALL_LANGS = [...LANGS, ...HIDDEN_LANGS] as const;
+export type Lang = (typeof ALL_LANGS)[number];
+export type HiddenLang = (typeof HIDDEN_LANGS)[number];
+
+export const isHidden = (lang: Lang): lang is HiddenLang => (HIDDEN_LANGS as readonly Lang[]).includes(lang);
+
+/** Nút theo dõi/đăng ký: bản tiếng Nhật dùng note, bản tiếng Trung dùng WeChat khi đã có; chưa có thì tạm dùng bản tin LinkedIn */
+export function followUrl(lang: Lang) {
+  if (lang === "ja" && NOTE_URL) return NOTE_URL;
+  if (lang === "zh" && WECHAT_URL) return WECHAT_URL;
+  return LINKEDIN_URL;
+}
+
+/** Nhãn nút theo dõi của bản tiếng Trung, đổi theo việc đã có tài khoản WeChat hay chưa */
+export const ZH_FOLLOW = WECHAT_URL ? "关注微信公众号" : "公众号筹备中·暂可在LinkedIn订阅";
+
+const ZH_NOTE = WECHAT_URL
+  ? `新章节会在微信公众号上第一时间发布。<a href="${WECHAT_URL}" target="_blank" rel="noopener noreferrer">关注公众号</a>`
+  : `中文版的微信公众号正在筹备中。在此之前，可以通过<a href="${LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">LinkedIn通讯</a>（英文、越南文）追读后续章节。`;
+
+/** Nhãn nút theo dõi của bản tiếng Nhật, đổi theo việc đã có trang note hay chưa */
+export const JA_FOLLOW = NOTE_URL ? "noteでフォローする" : "note準備中・いまはLinkedInで購読";
+
+const JA_NOTE = NOTE_URL
+  ? `新しい章はnoteでお知らせします。<a href="${NOTE_URL}" target="_blank" rel="noopener noreferrer">noteをフォローする</a>`
+  : `日本語版の連載はnoteで準備中です。それまでは<a href="${LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">LinkedInのニュースレター</a>（英語・ベトナム語）で続きを追えます。`;
 
 export const content = {
   "vi": {
     "cont": "Đọc tiếp chương 1",
-    "other_lang": {"en":"Mở bản tiếng Anh","vi":"Mở bản tiếng Việt","es":"Mở bản tiếng Tây Ban Nha"},
+    "other_lang": {"en":"Mở bản tiếng Anh","vi":"Mở bản tiếng Việt","es":"Mở bản tiếng Tây Ban Nha","ja":"Mở bản tiếng Nhật","zh":"Mở bản tiếng Trung"},
     "title": "Mười phần trăm còn lại",
     "eyebrow": "Truyện quản trị · Mỗi tuần một chương",
     "h1": "Mười phần trăm <em>còn lại</em>",
@@ -22,7 +59,7 @@ export const content = {
     "leg1": "<b>90 chấm</b> là phần việc agent làm",
     "leg2": "<b>10 chấm</b> là phần còn lại của con người",
     "st_eb": "Câu chuyện",
-    "st_h": "Một công ty cho thuê AI agent, và vài chục con người phía sau",
+    "st_h": "Một công ty cho thuê AI agent, và mười hai con người phía sau",
     "st1": "Hải Đăng cho thuê AI agent theo tháng. Khách hàng của họ là hơn mười nghìn công ty chỉ có một CEO: một chủ tiệm len, một nha sĩ, một xưởng may nhỏ, mỗi người cùng một đội agent ghi sổ, chào khách, trả lời tin nhắn lúc nửa đêm.",
     "st2": "Phía sau nền tảng ấy, số người thật chỉ vừa đủ ngồi kín hai dãy bàn. Họ đón những ca agent không giải quyết được. Và họ bắt đầu tự hỏi: nếu máy làm được chín mươi phần trăm việc của mình, thì mười phần trăm còn lại là gì?",
     "st3": "Cuốn sách đặt những bài học cũ về cách con người làm việc với nhau vào một thế giới mà người viết ra chúng chưa từng hình dung. Phần lớn, chúng còn đúng hơn.",
@@ -123,7 +160,7 @@ export const content = {
   },
   "en": {
     "cont": "Keep reading Chapter 1",
-    "other_lang": {"en":"Opens in English","vi":"Opens in Vietnamese (not yet translated)","es":"Opens in Spanish"},
+    "other_lang": {"en":"Opens in English","vi":"Opens in Vietnamese (not yet translated)","es":"Opens in Spanish","ja":"Opens in Japanese","zh":"Opens in Chinese"},
     "title": "The Last 10%",
     "eyebrow": "A management novel · One chapter a week",
     "h1": "The Last <em>10%</em>",
@@ -136,7 +173,7 @@ export const content = {
     "leg1": "<b>90 dots</b>: the work agents do",
     "leg2": "<b>10 dots</b>: the part that is still human",
     "st_eb": "The story",
-    "st_h": "A company that rents out AI agents, and the few dozen people behind it",
+    "st_h": "A company that rents out AI agents, and the twelve people behind it",
     "st1": "Hải Đăng, Vietnamese for “lighthouse”, rents out AI agents by the month. Its customers are more than ten thousand companies run by a single CEO: a yarn shop owner, a dentist, a small garment workshop, each with a team of agents that keep the books, greet customers and answer messages at midnight.",
     "st2": "Behind the platform, the actual humans barely fill two rows of desks. They take the cases the agents cannot solve. And they have started to wonder: if a machine can do ninety percent of my job, what is the other ten percent?",
     "st3": "The book places old lessons about how people work together in a world their authors never imagined. Mostly, they hold even better.",
@@ -237,7 +274,7 @@ export const content = {
   },
   "es": {
     "cont": "Seguir leyendo el capítulo 1",
-    "other_lang": {"en":"Se abre en inglés","vi":"Se abre en vietnamita (aún sin traducir)","es":"Se abre en español"},
+    "other_lang": {"en":"Se abre en inglés","vi":"Se abre en vietnamita (aún sin traducir)","es":"Se abre en español","ja":"Se abre en japonés","zh":"Se abre en chino"},
     "title": "El último 10 %",
     "eyebrow": "Novela de management · Un capítulo por semana",
     "h1": "El último <em>10 %</em>",
@@ -250,7 +287,7 @@ export const content = {
     "leg1": "<b>90 puntos</b>: el trabajo que hacen los agentes",
     "leg2": "<b>10 puntos</b>: la parte que sigue siendo humana",
     "st_eb": "La historia",
-    "st_h": "Una empresa que alquila agentes de IA, y las pocas decenas de personas que hay detrás",
+    "st_h": "Una empresa que alquila agentes de IA, y las doce personas que hay detrás",
     "st1": "Hải Đăng, que en vietnamita significa “faro”, alquila agentes de IA por meses. Sus clientes son más de diez mil empresas dirigidas por un solo CEO: una tienda de lanas, una clínica dental, un pequeño taller de confección, cada uno con un equipo de agentes que lleva la contabilidad, atiende a los clientes y responde mensajes a medianoche.",
     "st2": "Detrás de la plataforma, las personas de carne y hueso apenas llenan dos filas de escritorios. Se encargan de los casos que los agentes no saben resolver. Y han empezado a preguntarse: si una máquina puede hacer el noventa por ciento de mi trabajo, ¿qué es el diez por ciento restante?",
     "st3": "El libro lleva viejas lecciones sobre cómo trabajamos juntos a un mundo que sus autores nunca imaginaron. Casi siempre, resultan aún más ciertas.",
@@ -348,6 +385,236 @@ export const content = {
       "Todo estaba bien. Y ese era justamente el problema, solo que en ese momento él todavía no lo sabía.",
       "Su primer día de trabajo estaba tan nervioso que leía cada línea del razonamiento de los agentes como si fuera una novela policial. Llenó tres páginas de un cuaderno con los tipos de errores que solían cometer los agentes, y le preguntaba una y otra vez a la instructora por qué el agente de ventas saludaba a los clientes con un tono tan extrañamente solemne. Ahora el cuaderno dormía en un cajón, con la tapa cubierta por una fina capa de polvo. Ya no lo abría. Ya no tenía nada que anotar."
 ]
+  },
+  // Bản tiếng Nhật (ẩn, mới có chương 1). Tên sách 『残りの10%』, nhân vật タット・チュンさん, công ty ハイダン社.
+  "ja": {
+    "cont": "第1章のつづきを読む",
+    "other_lang": {"en":"英語版で開きます（日本語訳は準備中）","vi":"ベトナム語の原書で開きます（日本語訳は準備中）","es":"スペイン語版で開きます","ja":"日本語版で開きます","zh":"中国語版で開きます"},
+    "title": "残りの10%",
+    "eyebrow": "AI時代のマネジメント小説",
+    "h1": "残りの<em>10%</em>",
+    "q": "AIエージェントが仕事の九割をこなす時代、人間に残る一割とは何か。",
+    "buy": "英語版をAmazonで見る",
+    "read": "第1章を試し読み",
+    "note": JA_NOTE,
+    "alt": "『残りの10%』の表紙：川辺の灯台を岩の上から見つめる三人",
+    "quote": "「ハイダン社では、仕事の<b>九割</b>をエージェントがこなす。<b>残りの一割</b>を引き受けているのが、タットだった。」",
+    "leg1": "<b>90の点</b>：エージェントがこなす仕事",
+    "leg2": "<b>10の点</b>：人間の手に残る仕事",
+    "st_eb": "物語",
+    "st_h": "AIエージェントを貸し出す会社と、その裏で働く十二人",
+    "st1": "ハイダン社は、AIエージェントを月極めで貸し出している。顧客は一万社を超える「ひとり社長」の会社だ。毛糸の店、歯科医院、小さな縫製工房。社長はどこもひとりきりで、帳簿をつけ、客に声をかけ、真夜中のメッセージに返信するのはエージェントの一団である。",
+    "st2": "そのプラットフォームの裏にいる生身の人間は、机二列を埋めるほどしかいない。彼らはエージェントの手に負えない案件を引き受ける。そして、ふと考えはじめる。機械が自分の仕事の九割をこなせるなら、残りの一割とはいったい何なのか。",
+    "st3": "本書は、トヨタのカイゼンをはじめ、人がともに働くことをめぐる古くからの教えを、その書き手たちが思いもしなかった世界に置き直してみる。すると多くは、かえって確かさを増していく。",
+    "ca_eb": "二列目の机から",
+    "ca_h": "物語を最後までともに歩く三人",
+    "r1": "主人公",
+    "d1": "入社二年。仕事が速く、処理速度のランキングは四位。すべてが順調で、手帳に書くことがもう何も残っていない。",
+    "r2": "創業期からの古株",
+    "d2": "ハイダン社の最初期からいるひとり。口数は少ないが、三度目の報告をせざるをえなかった顧客を、ひとり残らず覚えている。",
+    "r3": "チームリーダー",
+    "d3": "働きはじめて二十年近く。人だけで回していたコールセンターの時代から、エージェントがほとんどをこなす今までを見てきた。いつも背の擦り切れた古い本を持ち歩き、会議テーブルのない場所でしか話をしたがらない。",
+    "a1k": "各章のはじまり",
+    "a1h": "ハイダン社の物語",
+    "a1p": "難しい案件、ひとつの会議、川辺の午後。",
+    "a2k": "物語のあいだに",
+    "a2h": "理論コラム",
+    "a2p": "物語の隣に、検証を重ねてきたマネジメント研究を置く。トヨタのカイゼンから心理的安全性まで。",
+    "a3k": "各章のおわり",
+    "a3h": "あなたへ",
+    "a3p": "自分の仕事に持ち帰るための、いくつかの問い。",
+    "toc_eb": "目次",
+    "toc_h": "ひとりの人間から会社全体へ、全二十章",
+    "ready": "いま読める",
+    "soon": "近日公開",
+    "p1": "第一部　まだ痛みを感じる人",
+    "p2": "第二部　小さなチーム、大きな仕事",
+    "p3": "第三部　会社が大きくなるとき",
+    "p4": "第四部　残りの一割",
+    "c": [
+      "痛みの在りか",
+      "新参者",
+      "今日も昨日と同じ",
+      "アイデアを売る",
+      "難しい仕事は磁石になる",
+      "自分と違う人",
+      "正しい人をバスに乗せる",
+      "すぐ褒め、本気で叱る",
+      "やり方ではなく目標を渡す",
+      "一番手の病",
+      "職人",
+      "石を探りながら川を渡る",
+      "顧客はKPIではない",
+      "大きくなることへの恐れ",
+      "文化が隙間を埋める",
+      "自動化の皮肉",
+      "よく聴く人",
+      "ほどよい恐れ",
+      "最後列",
+      "次の人"
+    ],
+    "th": [
+      "カイゼン／小さな勝利",
+      "ダブルループ学習／意図的な練習",
+      "現状維持バイアス／成長マインドセット",
+      "心理的安全性／ジョブ理論",
+      "目標設定理論／Aに報いてBを望む愚",
+      "多様性は能力に勝る／集団浅慮",
+      "「まず誰を、それから何を」／集合知",
+      "徹底した率直さ／公正な文化",
+      "ミッション・コマンド／内発的動機づけ",
+      "イノベーションのジレンマ",
+      "職人／仕事への誇り",
+      "情報が揃わないなかでの素早い決断",
+      "グッドハートの法則",
+      "組織の成長段階",
+      "文化の三つのレベル",
+      "自動化の皮肉",
+      "人の変化を支える聴き方",
+      "「パラノイアだけが生き残る」",
+      "現場を歩くマネジメント",
+      "内側から育つリーダー"
+    ],
+    "ending": "<b>エピローグ　意志あるところに。</b>川辺の、もうひとつの午後。けれど今度、古い本を手にしているのはタットだ。",
+    "ex_eb": "試し読み・第1章",
+    "ex_h": "痛みの在りか",
+    "ex_sub": "三度目の報告",
+    "ex_more": "日本語版は第{n}章まで公開中。続きは英語版とベトナム語の原書で読めます。",
+    "full": "英語版をAmazonで見る",
+    "sub": JA_FOLLOW,
+    "f_eb": "物語を追いかける",
+    "f_h": "一章ずつ、物語は進む",
+    "f_p": "読み終えて、チュンさんに言い返したくなったり、タットの肩をもちたくなったりしたなら、この本は役目を果たしたことになる。",
+    "o1k": "本",
+    "o1v": "英語版 <i>The Last 10%</i> はAmazonで発売中",
+    "o1b": "英語版をAmazonで見る",
+    "o2k": "一章ずつ、無料で",
+    "o2v": NOTE_URL ? "新しい章の公開をnoteでお知らせします" : "日本語版はnoteで連載準備中。それまではLinkedInのニュースレター（英語・ベトナム語）で続きを追えます",
+    "o2b": JA_FOLLOW,
+    "ft": "ハイダン社および登場人物は、すべてフィクションです。",
+    "excerpt": [
+      "ハイダン社では、仕事の九割をエージェントがこなす。残りの一割を引き受けているのが、タン・タットだった。",
+      "ハイダン社はAIエージェントの貸し出しを生業にしている。社名はベトナム語で「灯台」を意味する。顧客は、ここ数年で雨後の筍のように現れた新しいかたちの企業――社員がひとりしかいない会社だ。CEOはただひとり。その周りを、月極めで借りたエージェントの一団が固めている。経理エージェントが帳簿をつける。営業エージェントが客に声をかける。サポートエージェントが真夜中のメッセージに返信する。仕入れエージェントが毛糸を、布を、印刷用紙を発注する。そんな会社が一万社以上、ハイダン社のプラットフォームの上で昼も夜も動いている。一方、その裏側にいる生身の人間は、机二列をようやく埋めるほどしかいなかった。",
+      "チャン・タン・タットは二列目の席、顧客オペレーションチームにいた。彼の仕事は、エージェントが自力で解決できなかった案件や、エージェントの対応にCEOが納得しなかった案件を引き取ることだ。そうした案件はどれも、短く乾いたチャイムとともに画面に現れる。スプーンでグラスの縁を軽く叩いたような音だ。この二年、それが一日におよそ百回。暗がりで横になっている夜にも、頭のどこかでその音が鳴り、そして消えることがあった。",
+      "仕事は速かった。CEOとエージェントの長いやりとりも、数秒ざっと目を走らせるだけで、エージェントがどの一文で取り違えたのかがわかる。設定を直し、チケットを閉じ、次の案件を受ける。先週のランキングでは、処理速度で四位に彼の名前があった。一番ではない。けれど、彼について苦情を言った者も、これまでひとりもいなかった。",
+      "すべては順調だった。そして、それこそが問題だったのだ。ただ、そのときの彼はまだ知らなかった。",
+      "入社初日、彼は緊張のあまり、エージェントの推論を一行一行、推理小説でも読むように追ったものだ。エージェントが陥りがちな間違いのパターンを手帳三ページにびっしり書きつけ、営業エージェントがなぜ妙に堅苦しい口調で客に挨拶するのか、研修担当の女性に何度も尋ねた。いまその手帳は引き出しの中で眠り、表紙にはうっすらと埃が積もっている。もう開くこともない。書くことが、もう何もないのだ。"
+    ]
+  },
+  // Bản tiếng Trung giản thể (ẩn, mới có chương 1). Tên sách 《剩下的百分之十》, nhân vật 胜必・力士・忠哥, công ty 海灯公司.
+  "zh": {
+    "cont": "继续阅读第1章",
+    "other_lang": {"en":"将打开英文版（中文版翻译中）","vi":"将打开越南文原版（中文版翻译中）","es":"将打开西班牙文版","ja":"将打开日文版","zh":"将打开中文版"},
+    "title": "剩下的百分之十",
+    "eyebrow": "AI时代的管理小说",
+    "h1": "剩下的<em>百分之十</em>",
+    "q": "当AI智能体做完了九成的工作，人还剩下哪一成？",
+    "buy": "在Amazon看英文版",
+    "read": "试读第1章",
+    "note": ZH_NOTE,
+    "alt": "《剩下的百分之十》封面：三个人站在岩石上，望向河边的灯塔",
+    "quote": "“在海灯公司，智能体包揽了<b>百分之九十</b>的工作。<b>剩下的百分之十</b>，归胜必。”",
+    "leg1": "<b>90个点</b>：智能体完成的工作",
+    "leg2": "<b>10个点</b>：仍然属于人的部分",
+    "st_eb": "故事",
+    "st_h": "一家出租AI智能体的公司，和它背后的十二个人",
+    "st1": "海灯公司按月出租AI智能体。它的客户是一万多家“一人公司”：毛线铺、牙科诊所、小小的制衣作坊。每家公司都只有一位老板，记账、招呼客人、半夜回消息的，是一整支租来的智能体团队。",
+    "st2": "在这座平台背后，真人的数量刚好坐满两排办公桌。他们接手智能体解决不了的单子，也开始琢磨一个问题：如果机器能做完我九成的工作，剩下的那一成究竟是什么？",
+    "st3": "这本书把关于人如何一起工作的老道理——从丰田的改善讲起——放进一个连它们的作者都未曾想象过的世界。结果多半是：这些道理反而更站得住了。",
+    "ca_eb": "第二排办公桌",
+    "ca_h": "陪你走完整本书的三个人",
+    "r1": "主人公",
+    "d1": "入职两年，干活快，处理速度排行榜第四。一切都好，好到他的笔记本里已经没什么可记的了。",
+    "r2": "元老",
+    "d2": "海灯公司最早的一批员工之一。话不多，却记得每一位不得不报修第三次的客户。",
+    "r3": "组长",
+    "d3": "工作了将近二十年，从全靠真人值守的呼叫中心，一直干到智能体的时代。总带着一本书脊翻白的旧书，只喜欢在没有会议桌的地方说话。",
+    "a1k": "每章开篇",
+    "a1h": "海灯公司的故事",
+    "a1p": "一张棘手的工单，一场会，一个河边的下午。",
+    "a2k": "穿插其间",
+    "a2h": "理论角",
+    "a2p": "在故事旁边，放上经过反复检验的管理学研究，从丰田的改善到心理安全感。",
+    "a3k": "每章结尾",
+    "a3h": "写给你",
+    "a3p": "几个问题，带回你自己的工作中去。",
+    "toc_eb": "目录",
+    "toc_h": "二十章，从一个人到一整家公司",
+    "ready": "现在可读",
+    "soon": "即将推出",
+    "p1": "第一部　还能感到痛的人",
+    "p2": "第二部　小团队，大事情",
+    "p3": "第三部　公司长大的时候",
+    "p4": "第四部　剩下的百分之十",
+    "c": [
+      "痛处",
+      "外乡人",
+      "今天和昨天一样",
+      "推销一个想法",
+      "难事像磁铁",
+      "和自己不一样的人",
+      "让对的人上车",
+      "及时表扬，真诚批评",
+      "给目标，不给方法",
+      "第一名的病",
+      "手艺人",
+      "摸着石头过河",
+      "客户不是KPI",
+      "变大的恐惧",
+      "文化填补漏洞",
+      "自动化的反讽",
+      "善于倾听的人",
+      "恰到好处的恐惧",
+      "最后一排",
+      "下一个人"
+    ],
+    "th": [
+      "改善 · 小胜利",
+      "双环学习 · 刻意练习",
+      "现状偏差 · 成长型思维",
+      "心理安全感 · 待办任务理论",
+      "目标设定理论 · 奖励A却期待B",
+      "多样性胜过能力 · 群体思维",
+      "“先人后事” · 集体智慧",
+      "绝对坦率 · 公正文化",
+      "任务式指挥 · 内在动机",
+      "创新者的窘境",
+      "手艺人 · 以工作为荣",
+      "信息不全时的快速决策",
+      "古德哈特定律",
+      "组织成长的阶段",
+      "文化的三个层次",
+      "自动化的反讽",
+      "帮助人改变的倾听",
+      "“只有偏执狂才能生存”",
+      "走动式管理",
+      "从内部成长起来的领导者"
+    ],
+    "ending": "<b>尾声　有志者，事竟成。</b>又一个河边的下午，只是这一次，捧着那本旧书的人是胜必。",
+    "ex_eb": "试读 · 第1章",
+    "ex_h": "痛处",
+    "ex_sub": "第三次报修",
+    "ex_more": "中文版已更新至第{n}章。后续章节可以先读英文版和越南文原版。",
+    "full": "在Amazon看英文版",
+    "sub": ZH_FOLLOW,
+    "f_eb": "追读故事",
+    "f_h": "一章一章，故事往前走",
+    "f_p": "如果读完一章，你想跟忠哥争上两句，或者想替胜必说句话，这本书就算尽到了它的本分。",
+    "o1k": "书",
+    "o1v": "英文版 <i>The Last 10%</i> 已在Amazon上架",
+    "o1b": "在Amazon看英文版",
+    "o2k": "逐章免费阅读",
+    "o2v": WECHAT_URL ? "新章节发布后，会在微信公众号上通知你" : "中文版公众号正在筹备中。在此之前，可以通过LinkedIn通讯（英文、越南文）追读后续章节",
+    "o2b": ZH_FOLLOW,
+    "ft": "海灯公司及书中所有人物均为虚构。",
+    "excerpt": [
+      "在海灯公司，智能体包揽了百分之九十的工作。剩下的百分之十，归胜必。",
+      "海灯公司做的是AI智能体租赁生意——“海灯”二字，在越南语里就是灯塔的意思。它的客户是近几年雨后春笋般冒出来的一种新型企业：一人公司。整家公司只有一位CEO，围在他身边的，是按月租来的一整支智能体团队。会计智能体记账，销售智能体招呼客人，客服智能体在半夜回复消息，采购智能体订毛线、订布料、订打印纸。一万多家这样的公司在海灯的平台上运转，昼夜不停。而在这座平台背后，真人的数量刚好坐满两排办公桌。",
+      "陈胜必坐在第二排，属于客户运营组。他的工作是接手智能体自己解决不了的单子，或者CEO对智能体的处理不满意的单子。每一单弹上屏幕，都伴着一声短促、干脆的提示音，像勺子轻轻磕在杯沿上。两年来，每天大约一百声。有些夜里躺在黑暗中，他仍会听见它在脑子里某个地方响起，然后熄灭。",
+      "他干活快。CEO和智能体之间一长串对话，他扫上几秒，就能看出智能体是在哪一句理解错了。调配置，关工单，接下一单。上周的排行榜上，他的速度排在第四。他算不上最出色的，但也从来没有人对他有过什么抱怨。",
+      "一切都好。而问题恰恰就出在这里，只是那时他还不知道。",
+      "刚上班的第一天，他紧张得把智能体的每一行推理都当侦探小说来读。他在本子上记满了三页智能体常犯的错误，还缠着带他的培训师姐问了又问：为什么销售智能体跟客人打招呼，总是一副客气得出奇的腔调？如今那个本子静静躺在抽屉里，封面落了薄薄一层灰。他不再翻开它了。他已经没什么可记的了。"
+    ]
   }
 }
 

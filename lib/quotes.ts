@@ -4,11 +4,14 @@ import { AVAILABLE, loadChapter, type ReadLang } from "./chapters";
 
 export type Quote = { slug: string; n: number; i: number; text: string; chapterTitle: string };
 
-export function quotePath(lang: ReadLang, slug: string) {
+/** Ngôn ngữ có trang câu trích (bản tiếng Nhật, tiếng Trung không có: nút chia sẻ mở thẳng X / Weibo với link chương) */
+export type QuoteLang = Exclude<ReadLang, "ja" | "zh">;
+
+export function quotePath(lang: QuoteLang, slug: string) {
   return lang === "vi" ? `/trich/${slug}/` : lang === "en" ? `/en/quote/${slug}/` : `/es/cita/${slug}/`;
 }
 
-export function allQuotes(lang: ReadLang): Quote[] {
+export function allQuotes(lang: QuoteLang): Quote[] {
   const out: Quote[] = [];
   for (const n of AVAILABLE[lang]) {
     const ch = loadChapter(lang, n);
@@ -17,6 +20,6 @@ export function allQuotes(lang: ReadLang): Quote[] {
   return out;
 }
 
-export function findQuote(lang: ReadLang, slug: string): Quote | undefined {
+export function findQuote(lang: QuoteLang, slug: string): Quote | undefined {
   return allQuotes(lang).find((q) => q.slug === slug);
 }

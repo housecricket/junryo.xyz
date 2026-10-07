@@ -15,13 +15,15 @@ import { marked } from "marked";
 import { BASE_PATH } from "./site";
 import { buildNow, revealFraction } from "./schedule";
 
-export type ReadLang = "vi" | "en" | "es";
+export type ReadLang = "vi" | "en" | "es" | "ja" | "zh";
 
 /** Các chương đã phát hành cố định */
 const PUBLISHED: Record<ReadLang, number[]> = {
   vi: [1, 2, 3, 4],
   en: [1, 2, 3], // bản tiếng Anh chậm hơn tiếng Việt 1 chương
   es: [1, 2], // bản tiếng Tây Ban Nha chậm hơn tiếng Việt 2 chương
+  ja: [1], // bản tiếng Nhật (ẩn): mới dịch chương 1
+  zh: [1], // bản tiếng Trung giản thể (ẩn): mới dịch chương 1
 };
 
 /** File PDF trong public/pdf/ */
@@ -29,6 +31,8 @@ export const PDF_FILES: Record<ReadLang, Record<number, string>> = {
   vi: { 1: "chuong-1.pdf", 2: "chuong-2.pdf", 3: "chuong-3.pdf", 4: "chuong-4.pdf", 5: "chuong-5.pdf", 6: "chuong-6.pdf", 7: "chuong-7.pdf", 8: "chuong-8.pdf", 9: "chuong-9.pdf" },
   en: { 1: "chapter-1-en.pdf" },
   es: {},
+  ja: {},
+  zh: {},
 };
 
 const dir = (lang: ReadLang) => path.join(process.cwd(), "content", "chapters", lang);
@@ -65,7 +69,7 @@ const NOW = buildNow();
 /** Các chương đã đọc được trọn vẹn (đã phát hành + chương có lịch đã tới giờ phát hành) */
 const available = (l: ReadLang) =>
   [...new Set([...PUBLISHED[l], ...scheduled(l).filter((s) => NOW >= s.release).map((s) => s.n)])].sort((a, b) => a - b);
-export const AVAILABLE: Record<ReadLang, number[]> = { vi: available("vi"), en: available("en"), es: available("es") };
+export const AVAILABLE: Record<ReadLang, number[]> = { vi: available("vi"), en: available("en"), es: available("es"), ja: available("ja"), zh: available("zh") };
 
 /** Số chương đã phát hành liên tiếp từ chương 1, theo ngôn ngữ */
 export function releasedCount(lang: ReadLang): number {
@@ -90,7 +94,7 @@ export function readablePages(lang: ReadLang): number[] {
 
 /** Đường dẫn trang đọc của một chương */
 export function chapterPath(lang: ReadLang, n: number) {
-  return lang === "vi" ? `/chuong/${n}/` : lang === "en" ? `/en/chapter/${n}/` : `/es/capitulo/${n}/`;
+  return lang === "vi" ? `/chuong/${n}/` : lang === "en" ? `/en/chapter/${n}/` : lang === "ja" ? `/ja/shou/${n}/` : lang === "zh" ? `/zh/zhang/${n}/` : `/es/capitulo/${n}/`;
 }
 
 /** Link PDF, chỉ khi chương đã phát hành và file có thật trong public/pdf/ */
@@ -121,10 +125,12 @@ const inline = (s: string) => marked.parseInline(s, { async: false }) as string;
 
 /** Đọc phần "Tuần sau" cuối chương: tên chương kế, câu mồi, đoạn mô tả */
 function parseTeaser(md: string): Teaser | null {
-  const m = md.match(/\n## (?:Tuần sau|Next Week|La próxima semana)\n([\s\S]*)$/);
+  const m = md.match(/\n## (?:Tuần sau|Next Week|La próxima semana|来週|下周)\n([\s\S]*)$/);
   if (!m) return null;
   const parts = m[1].split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
-  const head = parts[0]?.match(/^\*\*(?:Chương|Chapter|Capítulo) (\d+) [–-] (.+)\*\*$/);
+  // "**Chương 2 – Người nhập cư**" hoặc tiếng Nhật/Trung "**第2章　新参者**" / "**第2章　外乡人**" (khoảng trắng toàn góc sau 第N章)
+  const head =
+    parts[0]?.match(/^\*\*(?:Chương|Chapter|Capítulo) (\d+) [–-] (.+)\*\*$/) ?? parts[0]?.match(/^\*\*第(\d+)章\u3000(.+)\*\*$/);
   if (!head) return null;
   const rest = parts.slice(1).filter((p) => !p.startsWith("**")); // bỏ đoạn kêu gọi LinkedIn/Amazon
   return {
@@ -137,7 +143,7 @@ function parseTeaser(md: string): Teaser | null {
 
 /** Các câu in đậm trong "Sổ tay của Thắng Tất" → câu đáng nhớ để chia sẻ */
 function parseQuotes(md: string): string[] {
-  const nb = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)/)[1] ?? "";
+  const nb = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất|タットの手帳|胜必的笔记本)/)[1] ?? "";
   return [...nb.matchAll(/^\d+\. \*\*(.+?)\*\*/gm)].map((m) => m[1]);
 }
 
@@ -153,26 +159,32 @@ function revealPart(story: string, fraction: number): string {
   return blocks.slice(0, k).join("\n\n");
 }
 
+/** Tiêu đề "# Chương 1 – Chỗ đau" → phần sau dấu gạch; tiếng Nhật/Trung "# 第1章　痛みの在りか" / "# 第1章　痛处" → phần sau khoảng trắng toàn góc */
+function titleOf(md: string): string {
+  const h1 = md.match(/^# (.+)$/m)?.[1] ?? "";
+  const ja = h1.match(/^第\d+章\u3000(.+)$/);
+  if (ja) return ja[1].trim();
+  return h1.split(/\s+[–-]\s+/).slice(1).join(" – ") || h1;
+}
+
 export function loadChapter(lang: ReadLang, n: number): Chapter {
   const file = path.join(dir(lang), `${n}.md`);
   const fm = frontMatter(fs.readFileSync(file, "utf8"));
   let md = fm.body;
 
-  // Tiêu đề "# Chương 1 – Chỗ đau" → lấy phần sau dấu gạch
-  const h1 = md.match(/^# (.+)$/m)?.[1] ?? "";
-  const title = h1.split(/\s+[–-]\s+/).slice(1).join(" – ") || h1;
+  const title = titleOf(md);
   let teaser = parseTeaser(md);
   let quotes = parseQuotes(md);
 
   md = md
     .replace(/^# .+\n+/m, "") // bỏ tiêu đề, trang tự hiển thị
     .replace(/^[A-Z][a-z]{2} \d{1,2}, \d{4} · @\S+\n+/m, "") // bỏ dòng ngày đăng
-    .replace(/\n## (Tuần sau|Next Week|La próxima semana)\n[\s\S]*$/, "\n"); // phần "tuần sau" thay bằng thẻ chương kế
+    .replace(/\n## (Tuần sau|Next Week|La próxima semana|来週|下周)\n[\s\S]*$/, "\n"); // phần "tuần sau" thay bằng thẻ chương kế
 
   // Chương đang mở dần: chỉ lấy phần truyện đã tới giờ mở
   let draft: Draft | null = null;
   if (fm.meta.start && fm.meta.release && NOW < new Date(fm.meta.release)) {
-    const story = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)/)[0];
+    const story = md.split(/\n## (?:Sổ tay|Thắng Tất’s Notebook|Cuaderno de Thắng Tất|タットの手帳|胜必的笔记本)/)[0];
     const frac = revealFraction(new Date(fm.meta.start), new Date(fm.meta.release), NOW);
     md = revealPart(story, frac);
     draft = {
@@ -202,9 +214,8 @@ export function notebook(lang: ReadLang): NotebookEntry[] {
   const out: NotebookEntry[] = [];
   for (const n of AVAILABLE[lang]) {
     const { body } = frontMatter(fs.readFileSync(path.join(dir(lang), `${n}.md`), "utf8"));
-    const h1 = body.match(/^# (.+)$/m)?.[1] ?? "";
-    const title = h1.split(/\s+[–-]\s+/).slice(1).join(" – ") || h1;
-    const sec = body.split(/\n## (?:Sổ tay của Thắng Tất|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)\n/)[1];
+    const title = titleOf(body);
+    const sec = body.split(/\n## (?:Sổ tay của Thắng Tất|Thắng Tất’s Notebook|Cuaderno de Thắng Tất|タットの手帳|胜必的笔记本)\n/)[1];
     if (!sec) continue;
     const md = sec.split(/\n#{2,3} /)[0].trim();
     const count = (md.match(/^\d+\. \*\*/gm) || []).length;
@@ -215,5 +226,5 @@ export function notebook(lang: ReadLang): NotebookEntry[] {
 
 /** Đường dẫn trang Sổ tay */
 export function notebookPath(lang: ReadLang) {
-  return lang === "vi" ? "/so-tay/" : lang === "en" ? "/en/notebook/" : "/es/cuaderno/";
+  return lang === "vi" ? "/so-tay/" : lang === "en" ? "/en/notebook/" : lang === "ja" ? "/ja/techo/" : lang === "zh" ? "/zh/biji/" : "/es/cuaderno/";
 }

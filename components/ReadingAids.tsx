@@ -1,7 +1,7 @@
 "use client";
 // Thanh tiến độ đọc, thanh mời đăng ký khi đọc quá nửa chương, và ghi nhớ chương đã đọc.
 import { useEffect, useState } from "react";
-import { AMAZON_URL, LINKEDIN_URL, type Lang } from "@/lib/content";
+import { AMAZON_URL, followUrl, type Lang } from "@/lib/content";
 import { UI } from "@/lib/ui";
 import { track } from "@/lib/analytics";
 
@@ -72,7 +72,7 @@ export default function ReadingAids({ lang, n, buyLabel, subLabel }: { lang: Lan
         <div className="wrap in">
           <p>{ui.barText}</p>
           <div className="act">
-            <a className="btn primary" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
+            <a className="btn primary" href={followUrl(lang)} target="_blank" rel="noopener noreferrer">
               {subLabel}
             </a>
             <a className="btn ghostw" href={AMAZON_URL} target="_blank" rel="noopener noreferrer">

@@ -33,15 +33,15 @@ export default function Analytics() {
       const lang = document.documentElement.lang;
       const href = el.getAttribute("href") || "";
       const from = where(el);
-      const ch = href.match(/\/(?:chuong|chapter|capitulo)\/(\d+)\//);
+      const ch = href.match(/\/(?:chuong|chapter|capitulo|shou|zhang)\/(\d+)\//);
       if (el.classList.contains("theme-btn")) return track("theme_toggle", { lang });
       if (el.classList.contains("lang-btn")) return track("lang_switch", { lang, to: el.getAttribute("hreflang") || "" });
       if (el.classList.contains("share")) return track("share_quote", { lang, page: location.pathname });
       if (href.includes("linkedin.com/in/")) return track("author_click", { lang, from });
-      if (href.includes("newsletter-follow")) return track("subscribe_click", { lang, from, page: location.pathname });
+      if (href.includes("newsletter-follow") || href.includes("note.com") || href.includes("weixin.qq.com")) return track("subscribe_click", { lang, from, page: location.pathname });
       if (href.includes("a.co/") || href.includes("amazon.")) return track("buy_click", { lang, from, page: location.pathname });
       if (href.endsWith(".pdf")) return track("pdf_download", { lang, file: href.split("/").pop() });
-      if (ch) return track("chapter_open", { lang, chapter: Number(ch[1]), from, chapter_lang: href.includes("/chapter/") ? "en" : href.includes("/capitulo/") ? "es" : "vi" });
+      if (ch) return track("chapter_open", { lang, chapter: Number(ch[1]), from, chapter_lang: href.includes("/chapter/") ? "en" : href.includes("/capitulo/") ? "es" : href.includes("/shou/") ? "ja" : href.includes("/zhang/") ? "zh" : "vi" });
     };
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });

@@ -5,7 +5,7 @@ import type { Lang } from "@/lib/content";
 import { countAt } from "@/lib/subscribers";
 import { UI } from "@/lib/ui";
 
-const LOCALE = { vi: "vi-VN", en: "en-US", es: "es-ES" } as const;
+const LOCALE = { vi: "vi-VN", en: "en-US", es: "es-ES", ja: "ja-JP", zh: "zh-CN" } as const;
 
 export default function SubscriberCount({ lang, initial, variant = "plain" }: { lang: Lang; initial: number; variant?: "plain" | "pill" }) {
   const [n, setN] = useState(initial);

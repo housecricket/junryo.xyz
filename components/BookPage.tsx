@@ -1,11 +1,11 @@
-import { AMAZON_URL, LINKEDIN_URL, content, type Content, type Lang } from "@/lib/content";
+import { AMAZON_URL, content, followUrl, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
 import Link from "next/link";
 import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, notebook, notebookPath, releasedCount, type ReadLang } from "@/lib/chapters";
 import { SIDE_STORIES } from "@/lib/sidestories";
 import BonusSignup from "./BonusSignup";
 import { ProgressMeter } from "./WritingStatus";
-import { UI } from "@/lib/ui";
+import { UI, isCJK, jaCh } from "@/lib/ui";
 import Countdown from "./Countdown";
 import SubscriberCount from "./SubscriberCount";
 import { countAt } from "@/lib/subscribers";
@@ -33,7 +33,7 @@ function chapter(c: Content, i: number) {
 
 /** Chương n mở bằng ngôn ngữ nào: ưu tiên ngôn ngữ đang xem, rồi tiếng Anh, rồi tiếng Việt */
 function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | null {
-  const order: ReadLang[] = lang === "vi" ? ["vi"] : lang === "en" ? ["en", "vi"] : ["es", "en", "vi"];
+  const order: ReadLang[] = lang === "vi" ? ["vi"] : lang === "en" ? ["en", "vi"] : lang === "ja" ? ["ja", "en", "vi"] : lang === "zh" ? ["zh", "en", "vi"] : ["es", "en", "vi"];
   for (const l of order) if (AVAILABLE[l].includes(n)) return { href: chapterPath(l, n), in: l };
   return null;
 }
@@ -42,12 +42,25 @@ const EXTRAS = {
   vi: { eb: "Ngoài các chương", nbh: "Sổ tay của Thắng Tất", nbp: (k: number, n: number) => `${k} điều Thắng Tất ghi lại sau ${n} chương đầu, gom về một trang. Dày thêm mỗi thứ Hai.`, nbb: "Mở sổ tay", sh: "Truyện bên lề", sp: "Quà riêng cho người đăng ký email: những câu chuyện ngoài các chương chính, không đăng trên web, không đăng trên LinkedIn.", sb: "" },
   en: { eb: "Beyond the chapters", nbh: "Thắng Tất’s Notebook", nbp: (k: number, n: number) => `${k} lessons Thắng Tất wrote down across the first ${n} chapters, gathered on one page. It grows every Monday.`, nbb: "Open the notebook", sh: "", sp: "", sb: "" },
   es: { eb: "Más allá de los capítulos", nbh: "Cuaderno de Thắng Tất", nbp: (k: number, n: number) => `${k} lecciones que Thắng Tất anotó en los primeros ${n} capítulos, reunidas en una página. Crece cada lunes.`, nbb: "Abrir el cuaderno", sh: "", sp: "", sb: "" },
+  ja: { eb: "各章のほかに", nbh: "タットの手帳", nbp: (k: number, n: number) => `タットが第${n}章までに書き留めた${k}つのことを、一ページにまとめました。日本語版の章が増えるたびに書き足されます。`, nbb: "手帳を開く", sh: "", sp: "", sb: "" },
+  zh: { eb: "章节之外", nbh: "胜必的笔记本", nbp: (k: number, n: number) => `胜必在前${n}章里记下的${k}条心得，收在同一页上。中文版每多译出一章，就会再添几条。`, nbb: "翻开笔记本", sh: "", sp: "", sb: "" },
+} as const;
+
+// Tên ba nhân vật; bản tiếng Nhật phiên âm katakana, bản tiếng Trung dùng tên Hán (陈胜必, 阮力士, 忠哥)
+const CAST_NAMES = {
+  default: ["Trần Thắng Tất", "Nguyễn Lực Sỹ", "Trung"],
+  ja: ["チャン・タン・タット", "グエン・ルック・シー", "チュン"],
+  zh: ["陈胜必", "阮力士", "忠哥"],
 } as const;
 
 export default function BookPage({ lang }: { lang: Lang }) {
   const c = content[lang];
   const x = UI[lang];
   const subs0 = countAt(buildNow());
+  // Bản ẩn (ja, zh): theo dõi qua note / WeChat (chưa có thì LinkedIn); không hiện số người đăng ký LinkedIn
+  const cjk = isCJK(lang);
+  const follow = followUrl(lang);
+  const names = cjk ? CAST_NAMES[lang] : CAST_NAMES.default;
   let n = 0;
   // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
   // Mỗi bản có nhịp riêng: tiếng Anh chậm 1 chương, tiếng Tây Ban Nha chậm 2 chương so với tiếng Việt
@@ -89,9 +102,11 @@ export default function BookPage({ lang }: { lang: Lang }) {
               </a>
             </div>
             <Html as="p" className="note" html={c.note} />
-            <p className="note">
-              <SubscriberCount lang={lang} initial={subs0} />
-            </p>
+            {!cjk && (
+              <p className="note">
+                <SubscriberCount lang={lang} initial={subs0} />
+              </p>
+            )}
           </div>
           <figure className="cover">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -107,7 +122,7 @@ export default function BookPage({ lang }: { lang: Lang }) {
             <div className="ns-t">
               <span className="eyebrow">{dn === upcoming ? x.thisWeek : x.weekK}</span>
               <span className="ns-title">
-                {x.chapter} {upcoming} · {c.c[upcoming - 1]}
+                {cjk ? `${jaCh(upcoming)}\u3000${c.c[upcoming - 1]}` : <>{x.chapter} {upcoming} · {c.c[upcoming - 1]}</>}
               </span>
               {upHook && <span className="ns-hook" dangerouslySetInnerHTML={{ __html: upHook }} />}
               {!translated && <span className="ns-hook ns-status">{x.status(rel, RELEASED)}</span>}
@@ -123,8 +138,8 @@ export default function BookPage({ lang }: { lang: Lang }) {
             </div>
             <div className="ns-a">
               <Countdown lang={lang} target={dInfo?.release} />
-              <SubscriberCount lang={lang} initial={subs0} variant="pill" />
-              <a className="btn primary" href={LINKEDIN_URL} {...ext}>
+              {!cjk && <SubscriberCount lang={lang} initial={subs0} variant="pill" />}
+              <a className="btn primary" href={follow} {...ext}>
                 {c.sub} <ArrowIcon />
               </a>
             </div>
@@ -181,9 +196,9 @@ export default function BookPage({ lang }: { lang: Lang }) {
           <div className="cast">
             {(
               [
-                ["tat", "Trần Thắng Tất", c.r1, c.d1],
-                ["sy", "Nguyễn Lực Sỹ", c.r2, c.d2],
-                ["trung", "Trung", c.r3, c.d3],
+                ["tat", names[0], c.r1, c.d1],
+                ["sy", names[1], c.r2, c.d2],
+                ["trung", names[2], c.r3, c.d3],
               ] as const
             ).map(([who, name, role, desc]) => (
               <article className="person" key={name}>
@@ -411,8 +426,8 @@ export default function BookPage({ lang }: { lang: Lang }) {
               <div className="ob">
                 <span className="k">{c.o2k}</span>
                 <Html className="v" html={c.o2v} />
-                <SubscriberCount lang={lang} initial={subs0} />
-                <a className="btn ghostw" href={LINKEDIN_URL} {...ext}>
+                {!cjk && <SubscriberCount lang={lang} initial={subs0} />}
+                <a className="btn ghostw" href={follow} {...ext}>
                   <span>{c.o2b}</span> <ArrowIcon />
                 </a>
               </div>

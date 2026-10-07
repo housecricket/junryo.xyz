@@ -7,6 +7,8 @@ const LABEL = {
   vi: { dark: "Bật chế độ đọc đêm", light: "Tắt chế độ đọc đêm" },
   en: { dark: "Switch to night mode", light: "Switch to day mode" },
   es: { dark: "Activar modo noche", light: "Activar modo día" },
+  ja: { dark: "夜間モードにする", light: "昼間モードに戻す" },
+  zh: { dark: "切换到夜间模式", light: "切换回日间模式" },
 } as const;
 
 export default function ThemeToggle({ lang }: { lang: Lang }) {

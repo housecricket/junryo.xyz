@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { AMAZON_URL, LINKEDIN_URL, content } from "@/lib/content";
+import { AMAZON_URL, JA_FOLLOW, NOTE_URL, WECHAT_URL, ZH_FOLLOW, content, followUrl, isHidden } from "@/lib/content";
 import { AVAILABLE, chapterPath, draftNumber, loadChapter, pdfUrl, type Chapter, type ReadLang } from "@/lib/chapters";
 import { ProgressMeter } from "./WritingStatus";
 import { PATHS, SITE_URL } from "@/lib/site";
-import { UI as UIX } from "@/lib/ui";
+import { UI as UIX, isCJK, jaCh } from "@/lib/ui";
 import Countdown from "./Countdown";
 import SubscriberCount from "./SubscriberCount";
 import { countAt } from "@/lib/subscribers";
@@ -30,7 +30,7 @@ const UI = {
     sub: "Đăng ký trên LinkedIn",
     buy: "Đặt mua trên Amazon",
     transP: "",
-    readVi: (n: number) => `Đọc chương ${n} →`,
+    readVi: (n: number, _l?: ReadLang) => `Đọc chương ${n} →`,
   },
   en: {
     contents: "Contents",
@@ -43,7 +43,7 @@ const UI = {
     sub: "Subscribe on LinkedIn",
     buy: "Buy on Amazon",
     transP: "The English translation is on its way. The Vietnamese original is already out.",
-    readVi: (n: number) => `Read Chapter ${n} in Vietnamese →`,
+    readVi: (n: number, _l?: ReadLang) => `Read Chapter ${n} in Vietnamese →`,
   },
   es: {
     contents: "Índice",
@@ -56,7 +56,37 @@ const UI = {
     sub: "Suscribirse en LinkedIn",
     buy: "Comprar en Amazon",
     transP: "La traducción al español está en camino. El original en vietnamita ya está publicado.",
-    readVi: (n: number) => `Leer el capítulo ${n} en vietnamita →`,
+    readVi: (n: number, _l?: ReadLang) => `Leer el capítulo ${n} en vietnamita →`,
+  },
+  ja: {
+    contents: "目次",
+    chapter: "章",
+    pdf: "PDFをダウンロード",
+    prev: "前の章",
+    next: "次の章",
+    soonK: "近日公開",
+    soonP: NOTE_URL
+      ? "新しい章はnoteでお知らせします。英語版の本はAmazonで手に入ります。"
+      : "日本語版の連載はnoteで準備中です。それまではLinkedInのニュースレターで、英語版とベトナム語の原書の新しい章をお届けします。",
+    sub: JA_FOLLOW,
+    buy: "英語版をAmazonで見る",
+    transP: "日本語訳は準備中です。続きはひと足先に、ほかの言語版で読めます。",
+    readVi: (n: number, l?: ReadLang) => (l === "en" ? `第${n}章を英語版で読む →` : `第${n}章をベトナム語の原書で読む →`),
+  },
+  zh: {
+    contents: "目录",
+    chapter: "章",
+    pdf: "下载PDF",
+    prev: "上一章",
+    next: "下一章",
+    soonK: "即将推出",
+    soonP: WECHAT_URL
+      ? "新章节会在微信公众号上第一时间发布。英文版图书可在Amazon购买。"
+      : "中文版的微信公众号正在筹备中。在此之前，LinkedIn通讯会推送英文版和越南文原版的新章节。",
+    sub: ZH_FOLLOW,
+    buy: "在Amazon看英文版",
+    transP: "中文版正在翻译中。后续章节可以先读其他语言的版本。",
+    readVi: (n: number, l?: ReadLang) => (l === "en" ? `阅读第${n}章英文版 →` : `阅读第${n}章越南文原版 →`),
   },
 } as const;
 
@@ -80,6 +110,14 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
   const home = PATHS[lang];
   const x = UIX[lang];
   const subs0 = countAt(buildNow());
+  // Bản ẩn (ja, zh): nút theo dõi trỏ tới note / WeChat (chưa có thì LinkedIn), không hiện số người đăng ký LinkedIn
+  const cjk = isCJK(lang); // ja, zh: số chương 第N章, không hiện số người đăng ký
+  const hidden = isHidden(lang);
+  const follow = followUrl(lang);
+  /** "Chương 3" / 「第3章」 */
+  const chN = (k: number) => (cjk ? jaCh(k) : <>{t.chapter} {k}</>);
+  // Chương kế chưa dịch: bản tiếng Nhật, tiếng Trung mở bản tiếng Anh nếu có, các bản khác giữ như cũ (tiếng Việt)
+  const altFor = (k: number): ReadLang => (hidden && AVAILABLE.en.includes(k) ? "en" : "vi");
 
   return (
     <>
@@ -96,15 +134,14 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
       </nav>
 
       {lang === "vi" && <TranslationNotice />}
+      {lang === "en" && <TranslationNotice reading="en" />}
 
       <header className="reader-head wrap">
         <div className="eyebrow">
           {c[partOf(chapter.n)]}
           {isDraft && <span className="draft-tag">{x.writing}</span>}
         </div>
-        <div className="chap-n">
-          {t.chapter} {chapter.n}
-        </div>
+        <div className="chap-n">{chN(chapter.n)}</div>
         <h1>{chapter.title}</h1>
         <div className="rule" aria-hidden="true" />
         {isDraft && chapter.draft && (
@@ -130,10 +167,10 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
               <ProgressMeter percent={chapter.draft.percent} label={x.writing} />
             </div>
             <Countdown lang={lang} target={chapter.draft?.release ?? dInfo?.release} />
-            <SubscriberCount lang={lang} initial={subs0} />
+            {!cjk && <SubscriberCount lang={lang} initial={subs0} />}
             <p className="desc small">{t.soonP}</p>
             <div className="row">
-              <a className="btn primary" href={LINKEDIN_URL} {...ext}>
+              <a className="btn primary" href={follow} {...ext}>
                 {t.sub} <ArrowIcon />
               </a>
               <a className="btn ghost" href={AMAZON_URL} {...ext}>
@@ -147,8 +184,14 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
       {!isDraft && (
         <Quotes
           lang={lang}
-          quotes={chapter.quotes.map((text, k) => ({ text, path: quotePath(lang, `${chapter.n}-${k + 1}`) }))}
-          source={`${c.title} · ${t.chapter} ${chapter.n}`}
+          quotes={chapter.quotes.map((text, k) => ({
+            text,
+            // Bản tiếng Nhật, tiếng Trung không có trang câu trích: chia sẻ link chương
+            path: lang === "ja" || lang === "zh" ? chapterPath(lang, chapter.n) : quotePath(lang, `${chapter.n}-${k + 1}`),
+          }))}
+          source={
+            lang === "zh" ? `《${c.title}》${jaCh(chapter.n)}` : cjk ? `『${c.title}』${jaCh(chapter.n)}` : `${c.title} · ${t.chapter} ${chapter.n}`
+          }
           siteUrl={SITE_URL}
         />
       )}
@@ -164,9 +207,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
           <div className="wrap tz-outer">
           <section className={`teaser${next ? "" : " soon"}`}>
             <div className="eyebrow">{next || (lang !== "vi" && !AVAILABLE[lang].includes(nn) && AVAILABLE.vi.includes(nn)) ? x.nextK : draftHere ? x.thisWeek : x.weekK}</div>
-            <div className="tz-n">
-              {t.chapter} {nn}
-            </div>
+            <div className="tz-n">{chN(nn)}</div>
             <h2>{nTitle}</h2>
             {tz?.hook && <p className="hook" dangerouslySetInnerHTML={{ __html: tz.hook }} />}
             {tz?.desc && <p className="desc" dangerouslySetInnerHTML={{ __html: tz.desc }} />}
@@ -180,10 +221,10 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
               <>
                 <p className="desc small">{t.transP}</p>
                 <div className="row">
-                  <Link className="btn primary" href={chapterPath("vi", nn)}>
-                    {t.readVi(nn)}
+                  <Link className="btn primary" href={hidden ? `${chapterPath(altFor(nn), nn)}#from-${lang}` : chapterPath("vi", nn)}>
+                    {t.readVi(nn, altFor(nn))}
                   </Link>
-                  <a className="btn ghost" href={LINKEDIN_URL} {...ext}>
+                  <a className="btn ghost" href={follow} {...ext}>
                     {t.sub} <ArrowIcon />
                   </a>
                 </div>
@@ -200,10 +241,10 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
                   </div>
                 )}
                 <Countdown lang={lang} target={chapter.draft?.release ?? dInfo?.release} />
-                <SubscriberCount lang={lang} initial={subs0} />
+                {!cjk && <SubscriberCount lang={lang} initial={subs0} />}
                 <p className="desc small">{t.soonP}</p>
                 <div className="row">
-                  <a className="btn primary" href={LINKEDIN_URL} {...ext}>
+                  <a className="btn primary" href={follow} {...ext}>
                     {t.sub} <ArrowIcon />
                   </a>
                   <a className="btn ghost" href={AMAZON_URL} {...ext}>
@@ -222,7 +263,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
           <Link className="pg prev" href={chapterPath(lang, prev)}>
             <span className="k">← {t.prev}</span>
             <span className="v">
-              {t.chapter} {prev} · {c.c[prev - 1]}
+              {cjk ? `${jaCh(prev)}\u3000${c.c[prev - 1]}` : <>{t.chapter} {prev} · {c.c[prev - 1]}</>}
             </span>
           </Link>
         </nav>

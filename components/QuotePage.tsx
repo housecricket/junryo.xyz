@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { LINKEDIN_URL, content } from "@/lib/content";
-import { chapterPath, type ReadLang } from "@/lib/chapters";
+import { chapterPath } from "@/lib/chapters";
 import { PATHS } from "@/lib/site";
-import type { Quote } from "@/lib/quotes";
+import type { Quote, QuoteLang } from "@/lib/quotes";
 import { ArrowIcon } from "./Icons";
 import AuthorLink from "./AuthorLink";
 
@@ -12,7 +12,7 @@ const T = {
   es: { k: "Frases para recordar", read: (n: number) => `Leer el capítulo ${n}`, sub: "Suscribirse en LinkedIn", ch: "Capítulo" },
 } as const;
 
-export default function QuotePage({ lang, q }: { lang: ReadLang; q: Quote }) {
+export default function QuotePage({ lang, q }: { lang: QuoteLang; q: Quote }) {
   const t = T[lang];
   const c = content[lang];
   return (

@@ -25,6 +25,8 @@ export function Flag({ lang }: { lang: Lang }) {
         </>
       )}
       {lang === "es" && <rect className="b" y="5" width="30" height="10" />}
+      {lang === "ja" && <circle className="b" cx="15" cy="10" r="5.5" />}
+      {lang === "zh" && <polygon className="b" points="7,2.6 8.45,6.6 12.7,6.75 9.35,9.35 10.5,13.45 7,11.05 3.5,13.45 4.65,9.35 1.3,6.75 5.55,6.6" />}
       <Frame />
     </svg>
   );

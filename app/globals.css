@@ -406,3 +406,82 @@ footer .author svg{flex:none}
 .bonus-form input:focus{outline:2px solid var(--muted);outline-offset:1px}
 .bonus-note{margin:0;font-size:.85rem;line-height:1.5;color:var(--muted)}
 .bonus-ok{color:var(--ink)}
+
+/* ===== Bản tiếng Nhật (/ja/, đang ẩn) — chỉ áp dụng khi <html lang="ja"> =====
+   Phông Minchō (Noto Serif JP, khai báo ở app/(ja)/layout.tsx) cho chữ Nhật; chữ Latin (tên Việt có dấu,
+   tên nhà nghiên cứu, số) vẫn dùng Lora/Playfair như các bản khác, ký tự Nhật tự rơi xuống phông Nhật. */
+html[lang="ja"]{
+  --display:var(--font-playfair),var(--font-noto-jp),"Noto Serif CJK JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  --serif:var(--font-lora),var(--font-noto-jp),"Noto Serif CJK JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:var(--font-bevn),"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic",Meiryo,system-ui,sans-serif;
+}
+/* Ngắt dòng kiểu Nhật: không để dấu câu, っ ゃ… đứng đầu dòng; chuỗi dài (URL) vẫn xuống dòng được */
+html[lang="ja"] body{line-height:1.9;line-break:strict;word-break:normal;overflow-wrap:anywhere}
+/* Tiếng Nhật không có chữ nghiêng: bỏ nghiêng, nhấn nhẹ bằng độ đậm */
+html[lang="ja"] :where(em,i,cite,dfn,var){font-style:normal;font-weight:600}
+html[lang="ja"] :is(.hero .q,.band blockquote,.band blockquote b,.ending,.excerpt .sub,.ns-hook,.teaser .hook,.alt-note,.nb-body p:last-child){font-style:normal}
+/* Ghi chú bên lề trong sổ tay, nguồn tham khảo cuối chương: nhấn bằng màu nhạt thay vì nghiêng hay đậm */
+html[lang="ja"] :is(.nb-body p:last-child,.reader hr + p) :where(em,i){font-weight:inherit;color:var(--muted)}
+/* Chữ hoa giãn cách (eyebrow, nhãn nhỏ) quá thưa với chữ Nhật */
+html[lang="ja"] :is(.eyebrow,.person .role,.anat .k,.part h3,.excerpt .chap,.opt .k,.pg .k,.cd-k,.reader-head .chap-n,.reader h3,.teaser .tz-n,.nb-n,.notebook-page .nb-count,.reader blockquote.box p:first-child strong,.ns-draft .k,.tz-draft .k,.part li.drafting .dr){letter-spacing:.06em}
+html[lang="ja"] :is(.hero h1,.reader-head h1,.notebook-page h1,.quote-page blockquote){letter-spacing:.02em}
+html[lang="ja"] :is(h1,h2,h3){line-height:1.4}
+html[lang="ja"] .hero h1{line-height:1.15}
+html[lang="ja"] :is(.reader-head h1,.notebook-page h1,.teaser h2){line-height:1.3}
+html[lang="ja"] .band blockquote{line-height:1.7}
+html[lang="ja"] .quotes blockquote{line-height:1.6}
+/* Đoạn văn dài: dòng thưa hơn */
+html[lang="ja"] .reader{line-height:1.95}
+html[lang="ja"] .excerpt .body{line-height:1.95}
+html[lang="ja"] .reader blockquote.box{line-height:1.85}
+html[lang="ja"] :is(.person p,.anat p,.extras .card p,.extras .side span,.teaser .desc,.nb-body,.notebook-page .lead,.final p){line-height:1.85}
+html[lang="ja"] :is(.part .t,.part .th){line-height:1.6}
+/* Thụt đầu dòng một chữ cho đoạn văn trong chương (không áp cho khung lý thuyết, danh sách, tiêu đề, nguồn tham khảo) */
+html[lang="ja"] .reader > p{text-indent:1em}
+html[lang="ja"] .reader > hr + p{text-indent:0}
+html[lang="ja"] .excerpt .body p{text-indent:1em}
+/* Chữ hoa đầu đoạn kiểu sách Latin không hợp với chữ Nhật */
+html[lang="ja"] .excerpt .body p:first-child::first-letter{float:none;font-family:inherit;font-size:inherit;line-height:inherit;padding:0;font-weight:inherit}
+html[lang="ja"] .hero h1 em{font-style:normal;font-weight:700;font-family:var(--font-noto-jp),"Noto Serif CJK JP",serif}
+
+/* ===== Bản tiếng Trung giản thể (/zh/, đang ẩn) — chỉ áp dụng khi <html lang="zh-CN"> =====
+   Phông chữ Tống (Noto Serif SC, khai báo ở app/(zh)/layout.tsx) cho chữ Hán. Tiêu đề lớn vẫn dùng Playfair cho chữ Latin
+   (chữ Hán tự rơi xuống phông Trung); thân bài dùng Noto Serif SC trước để dấu câu toàn góc hiển thị đúng. */
+html[lang="zh-CN"]{
+  --display:var(--font-playfair),var(--font-noto-sc),"Noto Serif CJK SC","Songti SC","SimSun",serif;
+  /* Chữ thân bài: phông Trung đứng trước để dấu câu “ ” —— ： lấy bản toàn góc của phông Trung, không lấy bản hẹp của Lora */
+  --serif:var(--font-noto-sc),"Noto Serif CJK SC","Songti SC","SimSun",var(--font-lora),serif;
+  --sans:var(--font-bevn),"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Noto Sans CJK SC",system-ui,sans-serif;
+}
+/* Ngắt dòng kiểu Trung: không để dấu câu đứng đầu dòng (避头尾); chuỗi dài (URL) vẫn xuống dòng được */
+html[lang="zh-CN"] body{line-height:1.9;line-break:strict;word-break:normal;overflow-wrap:anywhere}
+/* Chữ Hán không có kiểu nghiêng: bỏ nghiêng ở mọi chỗ, nhấn nhẹ bằng độ đậm */
+html[lang="zh-CN"] :where(em,i,cite,dfn,var){font-style:normal;font-weight:600}
+html[lang="zh-CN"] :is(.hero .q,.band blockquote,.band blockquote b,.ending,.excerpt .sub,.ns-hook,.teaser .hook,.alt-note,.nb-body p:last-child){font-style:normal}
+/* Ghi chú bên lề trong sổ tay, nguồn tham khảo cuối chương: nhấn bằng màu nhạt thay vì nghiêng hay đậm */
+html[lang="zh-CN"] :is(.nb-body p:last-child,.reader hr + p) :where(em,i){font-weight:inherit;color:var(--muted)}
+/* Chữ hoa giãn cách (eyebrow, nhãn nhỏ) quá thưa với chữ Hán */
+html[lang="zh-CN"] :is(.eyebrow,.person .role,.anat .k,.part h3,.excerpt .chap,.opt .k,.pg .k,.cd-k,.reader-head .chap-n,.reader h3,.teaser .tz-n,.nb-n,.notebook-page .nb-count,.reader blockquote.box p:first-child strong,.ns-draft .k,.tz-draft .k,.part li.drafting .dr){letter-spacing:.06em}
+html[lang="zh-CN"] :is(.hero h1,.reader-head h1,.notebook-page h1,.quote-page blockquote){letter-spacing:.04em}
+html[lang="zh-CN"] :is(h1,h2,h3){line-height:1.4}
+html[lang="zh-CN"] .hero h1{line-height:1.15}
+html[lang="zh-CN"] :is(.reader-head h1,.notebook-page h1,.teaser h2){line-height:1.3}
+html[lang="zh-CN"] .band blockquote{line-height:1.7}
+html[lang="zh-CN"] .quotes blockquote{line-height:1.6}
+/* Đoạn văn dài: dòng thưa, canh đều hai bên */
+html[lang="zh-CN"] .reader{line-height:1.9}
+html[lang="zh-CN"] .excerpt .body{line-height:1.9}
+html[lang="zh-CN"] .reader blockquote.box{line-height:1.85}
+html[lang="zh-CN"] :is(.person p,.anat p,.extras .card p,.extras .side span,.teaser .desc,.nb-body,.notebook-page .lead,.final p){line-height:1.85}
+html[lang="zh-CN"] :is(.part .t,.part .th){line-height:1.6}
+html[lang="zh-CN"] :is(.reader > p,.reader blockquote.box p,.excerpt .body p,.prose p,.nb-body li){text-align:justify}
+/* Thụt đầu dòng hai chữ cho đoạn văn trong chương (quy ước sách tiếng Trung; không áp cho khung lý thuyết, danh sách, tiêu đề, nguồn tham khảo) */
+html[lang="zh-CN"] .reader > p{text-indent:2em}
+html[lang="zh-CN"] .reader > hr + p{text-indent:0}
+html[lang="zh-CN"] .excerpt .body p{text-indent:2em}
+/* Chữ hoa đầu đoạn kiểu sách Latin không hợp với chữ Hán */
+html[lang="zh-CN"] .excerpt .body p:first-child::first-letter{float:none;font-family:inherit;font-size:inherit;line-height:inherit;padding:0;font-weight:inherit}
+/* .hero h1 em có luật nghiêng riêng ở đầu file: ghi đè rõ ràng */
+html[lang="zh-CN"] .hero h1 em{font-style:normal;font-weight:700;font-family:var(--font-noto-sc),"Noto Serif CJK SC","Songti SC",serif}
+/* Dòng báo "chưa dịch" của bản tiếng Trung khi hiện trên trang tiếng Việt / tiếng Anh */
+.translation-note:lang(zh){font-style:normal;line-break:strict}

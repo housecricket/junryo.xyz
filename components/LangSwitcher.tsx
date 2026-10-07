@@ -5,7 +5,8 @@ import { LANGS, type Lang } from "@/lib/content";
 import { PATHS } from "@/lib/site";
 import { Flag } from "./Icons";
 
-const NAMES: Record<Lang, string> = { vi: "Tiếng Việt", en: "English", es: "Español" };
+// LANGS chỉ gồm các bản công khai: bản tiếng Nhật, tiếng Trung (ẩn) không có cờ. Trên trang /ja/, /zh/ vẫn hiện cờ để quay về bản khác.
+const NAMES: Record<Lang, string> = { vi: "Tiếng Việt", en: "English", es: "Español", ja: "日本語", zh: "简体中文" };
 
 /** Ghi nhớ ngôn ngữ người đọc tự chọn, để trang chủ không tự chuyển nữa */
 function remember(l: Lang) {
