@@ -5,7 +5,7 @@ import Analytics from "@/components/Analytics";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
 
-// Gốc cho mọi link ảnh chia sẻ (og:image) → https://dangtrunganh.me/...
+// Gốc cho mọi link ảnh chia sẻ (og:image) → https://www.thelast10book.com/...
 export const metadata: Metadata = { metadataBase: new URL(SITE_URL) };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -78,7 +78,7 @@ NEXT_PUBLIC_SITE_URL=https://ten-mien-cua-ban.com npm run build
 ## Xuất bản trên Vercel
 
 Repo GitHub đã nối với Vercel: mỗi lần `git push` lên `master`, Vercel tự build (`npm run build`) và đăng lên
-https://dangtrunganh.me.
+https://www.thelast10book.com (tên miền cũ dangtrunganh.me chuyển hướng 301 về đây).
 
 Để chương mới **mở dần theo lịch** và **đủ chương lúc 0:00 thứ Hai**, trang cần được build lại theo giờ. Việc này do
 `.github/workflows/deploy.yml` làm: theo lịch, nó gọi Deploy Hook của Vercel. Cài một lần:

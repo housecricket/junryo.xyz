@@ -1,4 +1,4 @@
-// Đo lượt truy cập bằng Google Analytics 4 (Measurement ID của dangtrunganh.me).
+// Đo lượt truy cập bằng Google Analytics 4 (Measurement ID của site, trước ở dangtrunganh.me, nay ở www.thelast10book.com).
 // Đổi mã ở đây nếu cần; để chuỗi rỗng "" thì trang không tải Google Analytics.
 export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-FE2BPRQ831";
 

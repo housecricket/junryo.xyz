@@ -5,8 +5,8 @@ import { content, isHidden, type Lang } from "./content";
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 // Địa chỉ đầy đủ của trang, dùng cho thẻ chia sẻ Facebook/LinkedIn và Google.
-// Mặc định là dangtrunganh.me; đặt biến môi trường NEXT_PUBLIC_SITE_URL nếu đổi tên miền.
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://dangtrunganh.me").replace(/\/$/, "");
+// Mặc định là www.thelast10book.com (trước đây là dangtrunganh.me); đặt biến môi trường NEXT_PUBLIC_SITE_URL nếu đổi tên miền.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.thelast10book.com").replace(/\/$/, "");
 
 // Đường dẫn trong trang (Next.js tự thêm BASE_PATH cho <Link>)
 export const PATHS: Record<Lang, string> = { vi: "/", en: "/en/", es: "/es/", ja: "/ja/", zh: "/zh/" };
