@@ -9,7 +9,7 @@ A serialized management novel. Each chapter = a story at Hải Đăng (a fiction
 - Spanish: neutral Latin American Spanish (readers mainly in Peru/Latin America). Use "tú" when the book addresses the reader. Natural dialogue punctuation with Spanish quotes “…” as in the source (keep curly quotes) — do not switch to em-dash dialogue.
 
 ## Names and terms (never translate or change)
-- People: Trần Thắng Tất (often "Thắng Tất"), Nguyễn Lực Sỹ ("Lực Sỹ"), Trung, Ngọc Mai, Quân, Phong, chị Hằng → "Hằng", bác sĩ Diệp → "Dr. Diệp" / "la doctora Diệp".
+- People: Thư (keep "Thư"; drop "chị"), Khoa, Tùng, Khang (pharmacy chain owner; "anh Khang" → "Khang"), Trần Thắng Tất (often "Thắng Tất"), Nguyễn Lực Sỹ ("Lực Sỹ"), Trung, Ngọc Mai, Quân, Phong, chị Hằng → "Hằng", bác sĩ Diệp → "Dr. Diệp" / "la doctora Diệp".
 - Company: Hải Đăng (keep with diacritics). Do not re-gloss "lighthouse" (chapter 1 already did).
 - "agent" stays "agent" in English; in Spanish use "agente/agentes".
 - Product names: "Gói ngủ yên" → EN "the Sound Sleep package", ES "el Paquete Sueño Tranquilo". "Dự án Tự hành" → EN "Project Autonomy", ES "el Proyecto Autonomía".
@@ -19,8 +19,8 @@ A serialized management novel. Each chapter = a story at Hải Đăng (a fiction
 ## Structure (keep EXACTLY, same order, same number of paragraphs/blocks — the site reveals chapters block by block)
 - If the source starts with a `---` front-matter block, copy it **verbatim** (do not translate it).
 - Line 1: `# Chapter N – Title` / `# Capítulo N – Título` using these titles:
-  - EN: 1 Where It Hurts · 2 The Immigrant · 3 Today, Like Yesterday · 4 Selling an Idea · 5 Hard Problems Are Magnets · 6 People Unlike Us
-  - ES: 1 Donde duele · 2 El inmigrante · 3 Hoy, igual que ayer · 4 Vender una idea · 5 Los retos difíciles son imanes · 6 Gente distinta a nosotros
+  - EN: 1 Where It Hurts · 2 The Immigrant · 3 Today, Like Yesterday · 4 Selling an Idea · 5 Hard Problems Are Magnets · 6 People Unlike Us · 7 The Right People on the Bus · 8 Praise Now, Criticize Honestly · 9 Give Goals, Not Methods · 10 The Number-One Disease · 11 The Craftsman · 12 Feeling for the Stones · 13 Customers Are Not KPIs · 14 The Fear of Getting Big · 15 Culture Fills the Gaps · 16 The Irony of Automation · 17 The Good Listener · 18 Just Enough Fear · 19 The Back Row · 20 The Next One
+  - ES: 1 Donde duele · 2 El inmigrante · 3 Hoy, igual que ayer · 4 Vender una idea · 5 Los retos difíciles son imanes · 6 Gente distinta a nosotros · 7 Las personas adecuadas en el autobús · 8 Elogiar al momento, criticar con sinceridad · 9 Dar objetivos, no métodos · 10 La enfermedad del número uno · 11 El artesano · 12 Tantear las piedras · 13 Los clientes no son KPI · 14 El miedo a crecer · 15 La cultura llena los huecos · 16 La ironía de la automatización · 17 El buen oyente · 18 El miedo justo · 19 La última fila · 20 El siguiente
 - If the source has a byline line like `Oct 5, 2026 · @dangtrunganh`, keep it unchanged.
 - `##` section headings: translate.
 - Images: keep the line, translate only the alt text, keep the file name: `![translated alt](Minh_hoa_....jpg)`.

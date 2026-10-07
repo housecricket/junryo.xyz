@@ -26,7 +26,7 @@ const PUBLISHED: Record<ReadLang, number[]> = {
 
 /** File PDF trong public/pdf/ */
 export const PDF_FILES: Record<ReadLang, Record<number, string>> = {
-  vi: { 1: "chuong-1.pdf", 2: "chuong-2.pdf", 3: "chuong-3.pdf", 4: "chuong-4.pdf", 5: "chuong-5.pdf" },
+  vi: { 1: "chuong-1.pdf", 2: "chuong-2.pdf", 3: "chuong-3.pdf", 4: "chuong-4.pdf", 5: "chuong-5.pdf", 6: "chuong-6.pdf", 7: "chuong-7.pdf", 8: "chuong-8.pdf", 9: "chuong-9.pdf" },
   en: { 1: "chapter-1-en.pdf" },
   es: {},
 };
@@ -193,4 +193,27 @@ export function loadChapter(lang: ReadLang, n: number): Chapter {
     .replace(/<p><img src="([^"]+)" alt="([^"]*)"><\/p>/g, '<figure><img src="$1" alt="$2" loading="lazy"><figcaption>$2</figcaption></figure>');
 
   return { n, title, html, teaser, quotes, draft };
+}
+
+export type NotebookEntry = { n: number; title: string; html: string; count: number };
+
+/** "Sổ tay của Thắng Tất" của các chương đã phát hành trọn vẹn (không lấy chương đang mở dần) */
+export function notebook(lang: ReadLang): NotebookEntry[] {
+  const out: NotebookEntry[] = [];
+  for (const n of AVAILABLE[lang]) {
+    const { body } = frontMatter(fs.readFileSync(path.join(dir(lang), `${n}.md`), "utf8"));
+    const h1 = body.match(/^# (.+)$/m)?.[1] ?? "";
+    const title = h1.split(/\s+[–-]\s+/).slice(1).join(" – ") || h1;
+    const sec = body.split(/\n## (?:Sổ tay của Thắng Tất|Thắng Tất’s Notebook|Cuaderno de Thắng Tất)\n/)[1];
+    if (!sec) continue;
+    const md = sec.split(/\n#{2,3} /)[0].trim();
+    const count = (md.match(/^\d+\. \*\*/gm) || []).length;
+    out.push({ n, title, html: marked.parse(md, { async: false }) as string, count });
+  }
+  return out;
+}
+
+/** Đường dẫn trang Sổ tay */
+export function notebookPath(lang: ReadLang) {
+  return lang === "vi" ? "/so-tay/" : lang === "en" ? "/en/notebook/" : "/es/cuaderno/";
 }

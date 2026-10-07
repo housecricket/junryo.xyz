@@ -158,7 +158,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
         const tz = chapter.teaser;
         const nn = tz?.n ?? chapter.n + 1;
         const nTitle = tz?.title ?? c.c[chapter.n];
-        if (chapter.n >= 14 || isDraft) return null;
+        if (chapter.n >= 20 || isDraft) return null;
         const draftHere = !next && dn === nn && dInfo;
         return (
           <div className="wrap tz-outer">

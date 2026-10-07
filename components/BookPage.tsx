@@ -1,7 +1,9 @@
 import { AMAZON_URL, LINKEDIN_URL, content, type Content, type Lang } from "@/lib/content";
 import { COVERS } from "@/lib/site";
 import Link from "next/link";
-import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, releasedCount, type ReadLang } from "@/lib/chapters";
+import { AVAILABLE, RELEASED, chapterPath, draftNumber, loadChapter, notebook, notebookPath, releasedCount, type ReadLang } from "@/lib/chapters";
+import { SIDE_STORIES } from "@/lib/sidestories";
+import BonusSignup from "./BonusSignup";
 import { ProgressMeter } from "./WritingStatus";
 import { UI } from "@/lib/ui";
 import Countdown from "./Countdown";
@@ -16,12 +18,14 @@ import { ArrowIcon, BookIcon, ClockIcon, Flag, LegendDot, MailIcon, OpenBookIcon
 
 const ext = { target: "_blank", rel: "noopener noreferrer" } as const;
 
-// Ba phần của mục lục: [khoá tiêu đề, số chương]
+// Bốn phần của mục lục: [khoá tiêu đề, số chương]
 const PARTS = [
   ["p1", 4],
   ["p2", 5],
-  ["p3", 5],
+  ["p3", 6],
+  ["p4", 5],
 ] as const;
+const TOTAL_CHAPTERS = PARTS.reduce((a, [, n]) => a + n, 0);
 
 function chapter(c: Content, i: number) {
   return { title: c.c[i], theory: c.th[i] };
@@ -34,6 +38,12 @@ function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | nul
   return null;
 }
 
+const EXTRAS = {
+  vi: { eb: "Ngoài các chương", nbh: "Sổ tay của Thắng Tất", nbp: (k: number, n: number) => `${k} điều Thắng Tất ghi lại sau ${n} chương đầu, gom về một trang. Dày thêm mỗi thứ Hai.`, nbb: "Mở sổ tay", sh: "Truyện bên lề", sp: "Quà riêng cho người đăng ký email: những câu chuyện ngoài các chương chính, không đăng trên web, không đăng trên LinkedIn.", sb: "" },
+  en: { eb: "Beyond the chapters", nbh: "Thắng Tất’s Notebook", nbp: (k: number, n: number) => `${k} lessons Thắng Tất wrote down across the first ${n} chapters, gathered on one page. It grows every Monday.`, nbb: "Open the notebook", sh: "", sp: "", sb: "" },
+  es: { eb: "Más allá de los capítulos", nbh: "Cuaderno de Thắng Tất", nbp: (k: number, n: number) => `${k} lecciones que Thắng Tất anotó en los primeros ${n} capítulos, reunidas en una página. Crece cada lunes.`, nbb: "Abrir el cuaderno", sh: "", sp: "", sb: "" },
+} as const;
+
 export default function BookPage({ lang }: { lang: Lang }) {
   const c = content[lang];
   const x = UI[lang];
@@ -42,7 +52,9 @@ export default function BookPage({ lang }: { lang: Lang }) {
   // Chương sắp ra: lấy câu mồi từ phần "Tuần sau" của chương mới nhất (bản tiếng Việt)
   // Mỗi bản có nhịp riêng: tiếng Anh chậm 1 chương, tiếng Tây Ban Nha chậm 2 chương so với tiếng Việt
   const rel = releasedCount(lang);
-  const upcoming = rel < 14 ? rel + 1 : null;
+  const nbEntries = notebook(lang);
+  const nbTotal = nbEntries.reduce((a, e) => a + e.count, 0);
+  const upcoming = rel < TOTAL_CHAPTERS ? rel + 1 : null;
   const upHook = upcoming && rel > 0 ? loadChapter(lang, rel).teaser?.hook ?? "" : "";
   // Bản tiếng Anh / Tây Ban Nha: bao nhiêu chương đã có bằng chính ngôn ngữ này
   const nativeCount = rel;
@@ -332,6 +344,40 @@ export default function BookPage({ lang }: { lang: Lang }) {
               </div>
             </div>
           </article>
+        </div>
+      </section>
+
+      {/* Sổ tay và truyện bên lề */}
+      <section className="s extras">
+        <div className="wrap">
+          <div className="eyebrow">{EXTRAS[lang].eb}</div>
+          <div className="grid2" style={{ marginTop: "1.2rem" }}>
+            <div className="card">
+              <h3>{EXTRAS[lang].nbh}</h3>
+              <p>{EXTRAS[lang].nbp(nbTotal, nbEntries.length)}</p>
+              <Link className="btn ghost" href={notebookPath(lang)}>
+                {EXTRAS[lang].nbb} →
+              </Link>
+            </div>
+            {lang === "vi" && (
+              <div className="card">
+                <h3>{EXTRAS.vi.sh}</h3>
+                <p>{EXTRAS.vi.sp}</p>
+                <ul className="side">
+                  {SIDE_STORIES.map((s) => (
+                    <li key={s.n}>
+                      <span className="lock" aria-hidden="true">{s.n}</span>
+                      <div>
+                        <b>{s.title}</b> · {s.who}
+                        <span>{s.hook}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <BonusSignup />
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
