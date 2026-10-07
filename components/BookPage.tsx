@@ -38,6 +38,21 @@ function readTarget(lang: Lang, n: number): { href: string; in: ReadLang } | nul
   return null;
 }
 
+// Các bản công khai; bản ẩn (ja, zh) không bao giờ hiện trên mục lục của bản khác
+const PUBLIC_LANGS: ReadLang[] = ["vi", "en", "es"];
+/** Các ngôn ngữ khác (ngoài ngôn ngữ đang xem và ngôn ngữ của link chính) đã có trọn chương n */
+function alsoIn(lang: Lang, n: number, exclude?: ReadLang): ReadLang[] {
+  return PUBLIC_LANGS.filter((l) => l !== lang && l !== exclude && AVAILABLE[l].includes(n));
+}
+// Chú thích cho cờ nhỏ ở mục lục
+const ALSO_LEGEND: Record<Lang, string> = {
+  vi: "Đã có bằng ngôn ngữ khác",
+  en: "Also available in",
+  es: "También disponible en",
+  ja: "ほかの言語でも読めます",
+  zh: "也可以读其他语言版本",
+};
+
 const EXTRAS = {
   vi: { eb: "Ngoài các chương", nbh: "Sổ tay của Thắng Tất", nbp: (k: number, n: number) => `${k} điều Thắng Tất ghi lại sau ${n} chương đầu, gom về một trang. Dày thêm mỗi thứ Hai.`, nbb: "Mở sổ tay", sh: "Truyện bên lề", sp: "Quà riêng cho người đăng ký email: những câu chuyện ngoài các chương chính, không đăng trên web, không đăng trên LinkedIn.", sb: "" },
   en: { eb: "Beyond the chapters", nbh: "Thắng Tất’s Notebook", nbp: (k: number, n: number) => `${k} lessons Thắng Tất wrote down across the first ${n} chapters, gathered on one page. It grows every Monday.`, nbb: "Open the notebook", sh: "", sp: "", sb: "" },
@@ -80,6 +95,10 @@ export default function BookPage({ lang }: { lang: Lang }) {
   const dn = draftNumber(dLang);
   const dInfo = dn ? loadChapter(dLang, dn).draft : null;
   const draftHref = dn ? chapterPath(dLang, dn) + (dLang === lang ? "" : `#from-${lang}`) : "";
+  // Những ngôn ngữ khác xuất hiện trong mục lục (để làm chú thích)
+  const alsoLangs = PUBLIC_LANGS.filter((l) =>
+    Array.from({ length: RELEASED }, (_, k) => k + 1).some((k) => alsoIn(lang, k, readTarget(lang, k)?.in).includes(l)),
+  );
 
   return (
     <>
@@ -257,6 +276,16 @@ export default function BookPage({ lang }: { lang: Lang }) {
                 {x.writing}
               </span>
             )}
+            {alsoLangs.length > 0 && (
+              <span>
+                <span className="also lg" aria-hidden="true">
+                  {alsoLangs.map((l) => (
+                    <Flag key={l} lang={l} />
+                  ))}
+                </span>
+                {ALSO_LEGEND[lang]}
+              </span>
+            )}
             <span className="soon-swatch">
               <ClockIcon style={{ width: "1.1rem", height: "1.1rem" }} />
               {c.soon}
@@ -288,6 +317,15 @@ export default function BookPage({ lang }: { lang: Lang }) {
                                 </span>
                               )}
                             </Link>
+                            {alsoIn(lang, i + 1, dLang).length > 0 && (
+                              <span className="also">
+                                {alsoIn(lang, i + 1, dLang).map((l) => (
+                                  <Link key={l} href={chapterPath(l, i + 1)} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
+                                    <Flag lang={l} />
+                                  </Link>
+                                ))}
+                              </span>
+                            )}
                           </span>
                           <span className="dr">
                             <ProgressMeter percent={dInfo.percent} label={x.writing} />
@@ -314,7 +352,17 @@ export default function BookPage({ lang }: { lang: Lang }) {
                                 </span>
                               )}
                             </Link>
-                          ) : (
+                          ) : null}
+                          {target && alsoIn(lang, i + 1, target.in).length > 0 && (
+                            <span className="also">
+                              {alsoIn(lang, i + 1, target.in).map((l) => (
+                                <Link key={l} href={chapterPath(l, i + 1)} hrefLang={l} title={c.other_lang[l]} aria-label={c.other_lang[l]}>
+                                  <Flag lang={l} />
+                                </Link>
+                              ))}
+                            </span>
+                          )}
+                          {!target && (
                             <>
                               <Html html={ch.title} />
                               <span className="soon-ic" title={c.soon}>

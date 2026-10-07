@@ -485,3 +485,10 @@ html[lang="zh-CN"] .excerpt .body p:first-child::first-letter{float:none;font-fa
 html[lang="zh-CN"] .hero h1 em{font-style:normal;font-weight:700;font-family:var(--font-noto-sc),"Noto Serif CJK SC","Songti SC",serif}
 /* Dòng báo "chưa dịch" của bản tiếng Trung khi hiện trên trang tiếng Việt / tiếng Anh */
 .translation-note:lang(zh){font-style:normal;line-break:strict}
+/* Cờ nhỏ ở mục lục: chương này cũng đã có bằng ngôn ngữ khác */
+.also{display:inline-flex;gap:.3rem;vertical-align:-.08em;margin-left:.55rem;padding-left:.55rem;border-left:1px solid var(--line,#ddd)}
+.also a{display:inline-flex;line-height:0;opacity:.7;transition:opacity .15s}
+.also a:hover,.also a:focus-visible{opacity:1}
+.also .flag{width:.95rem;height:.63rem}
+.legend .also.lg{margin:0;padding:0;border:0;gap:.25rem}
+.legend .also.lg .flag{width:.95rem;height:.63rem;opacity:.7}
