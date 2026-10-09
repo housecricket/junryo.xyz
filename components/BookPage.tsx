@@ -447,12 +447,20 @@ export default function BookPage({ lang }: { lang: Lang }) {
       {/* Mua sách và đăng ký */}
       <section className="final">
         <div className="wrap grid">
-          <div>
-            <div className="eyebrow" style={{ color: "var(--band-muted)" }}>
-              {c.f_eb}
+          <div className="fl">
+            {/* 100 chấm: 90 của agent, 10 sáng là phần của con người */}
+            <div className="fdots" aria-hidden="true">
+              {Array.from({ length: 100 }, (_, k) => (
+                <i key={k} className={k >= 90 ? "h" : undefined} />
+              ))}
             </div>
-            <h2 style={{ marginTop: ".9rem" }}>{c.f_h}</h2>
-            <p>{c.f_p}</p>
+            <div>
+              <div className="eyebrow" style={{ color: "var(--band-muted)" }}>
+                {c.f_eb}
+              </div>
+              <h2 style={{ marginTop: ".9rem" }}>{c.f_h}</h2>
+              <p>{c.f_p}</p>
+            </div>
           </div>
           <div className="opts">
             <div className="opt">
