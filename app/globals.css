@@ -496,3 +496,47 @@ html[lang="zh-CN"] .hero h1 em{font-style:normal;font-weight:700;font-family:var
 /* Chương chưa có bằng ngôn ngữ đang xem: mọi cờ đều mờ, kể cả cờ chính cạnh tên chương */
 .part .in-lang.dim .flag,.legend .dim .flag{opacity:.4}
 .part .tl:hover .in-lang.dim .flag,.part .tl:focus-visible .in-lang.dim .flag{opacity:1}
+
+/* Trang câu trích: câu + lời giải thích cạnh tranh minh hoạ, câu chuyện phía sau, các câu khác cùng chương */
+.qp{padding-bottom:clamp(40px,8vw,96px)}
+.qp .eyebrow{margin-bottom:1rem}
+.qp-hero{display:grid;gap:clamp(28px,5vw,64px);align-items:center;padding-block:clamp(40px,8vw,96px) clamp(32px,6vw,72px)}
+.qp-hero.has-art{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.qp-hero blockquote{margin:0;font-family:var(--display);font-weight:900;font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.12;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
+.qp-note{margin:1.4rem 0 0;font-family:var(--serif);font-size:clamp(1.05rem,1.6vw,1.2rem);line-height:1.7;color:var(--ink);max-width:34rem;padding-left:1rem;border-left:3px solid var(--ink)}
+.qp-hero .row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.8rem}
+.share-q{display:inline-flex;align-items:center;gap:.5rem}
+.qp-fig{margin:0}
+.qp-fig img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border:1px solid var(--line);filter:grayscale(1)}
+.qp-fig figcaption{margin-top:.6rem;font-family:var(--sans);font-size:.78rem;color:var(--muted)}
+.qp-story{border-top:1px solid var(--line);padding-block:clamp(32px,6vw,64px)}
+.qp-story > *{max-width:44rem}
+.qp-story h2{margin:0 0 1rem;font-family:var(--display);font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.2}
+.qp-story p{margin:0 0 1rem;font-family:var(--serif);font-size:1.08rem;line-height:1.75;color:var(--ink)}
+.qp-story p.hook{font-style:italic}
+.more-link{font-family:var(--sans);font-weight:600;font-size:.92rem;color:var(--ink);text-underline-offset:.22em}
+.qp-more{border-top:1px solid var(--line);padding-block:clamp(32px,6vw,56px)}
+.qp-more ul{list-style:none;margin:0 0 1.4rem;padding:0;display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.qp-more li a{display:block;height:100%;padding:1.2rem 1.3rem;border:1px solid var(--line);background:var(--paper);font-family:var(--display);font-weight:700;font-size:1.15rem;line-height:1.35;color:var(--ink);text-decoration:none;transition:border-color .15s}
+.qp-more li a:hover{border-color:var(--ink)}
+.qp-pager{display:grid;grid-template-columns:1fr 1fr;gap:1rem;border-top:1px solid var(--line);padding-block:1.6rem}
+.qp-pager a{display:flex;flex-direction:column;gap:.35rem;font-family:var(--serif);font-size:.98rem;line-height:1.45;color:var(--ink);text-decoration:none}
+.qp-pager a span{font-family:var(--sans);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.qp-pager a:hover{text-decoration:underline;text-underline-offset:.2em}
+.qp-pager .next{text-align:right;grid-column:2}
+.qp-sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1.2rem 2rem;border:1px solid var(--ink);padding:clamp(20px,4vw,36px);margin-top:clamp(16px,4vw,32px)}
+.qp-sub h2{margin:0 0 .4rem;font-family:var(--display);font-size:clamp(1.3rem,2.4vw,1.7rem)}
+.qp-sub p{margin:0;font-family:var(--sans);font-size:.92rem;color:var(--muted);max-width:32rem}
+@media (max-width:760px){
+  .qp-hero.has-art{grid-template-columns:1fr}
+  .qp-fig{order:-1}
+  .qp-pager{grid-template-columns:1fr}
+  .qp-pager .next{grid-column:1;text-align:left}
+}
+/* Trang câu trích: góc lý thuyết và trích đoạn mở đầu chương */
+.qp-story .qp-th{display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:baseline;font-family:var(--sans);font-size:.88rem;color:var(--ink);margin:.4rem 0 1.6rem}
+.qp-story .qp-th > span:first-child{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.qp-open{margin:0;background:var(--paper);border:1px solid var(--line);padding:clamp(20px,4vw,36px);max-width:44rem}
+.qp-open figcaption{font-family:var(--sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.qp-open p{font-size:1.1rem!important;line-height:1.8!important;margin:0 0 .9rem!important}
+.qp-open p:first-of-type::first-letter{float:left;font-family:var(--display);font-weight:900;font-size:3.4em;line-height:.82;margin:.08em .12em 0 0}

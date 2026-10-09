@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import QuotePage from "@/components/QuotePage";
 import { content } from "@/lib/content";
-import { allQuotes, findQuote, quotePath } from "@/lib/quotes";
+import { allQuotes, findQuote, quoteDetail, quotePath } from "@/lib/quotes";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -26,5 +26,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  return <QuotePage lang="es" q={findQuote("es", (await params).slug)!} />;
+  return <QuotePage lang="es" q={quoteDetail("es", (await params).slug)} />;
 }

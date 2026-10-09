@@ -30,7 +30,7 @@ A serialized management novel. Each chapter = a story at Hải Đăng (a fiction
 - The `---` rule and the italic references line: EN starts `*Further reading: …*`, ES `*Lecturas: …*`; keep publication titles in their original language; end with the fictional-characters sentence translated.
 - `## Tuần sau` → EN `## Next Week`, ES `## La próxima semana`. Next line `**Chapter N – Title**` / `**Capítulo N – Título**` (titles above). Translate the italic hook and description.
 - Closing CTA paragraph (starts with bold "Cuốn sách đang được viết…"): EN like chapter 1 ("**This book is being written in public, one chapter a week on LinkedIn.** Follow along and subscribe to the *The Last 10%* newsletter…"); ES "**Este libro se escribe en público, un capítulo por semana en LinkedIn.** Suscríbete al boletín…". Translate the reader question.
-- Amazon line `**Đặt mua sách trên Amazon:** [a.co/d/0jbHvq34](https://a.co/d/0jbHvq34)` → EN `**Get the book on Amazon:**`, ES `**Compra el libro en Amazon:**`, same link.
+- Amazon line (pre-order, out 31/12/2026) `**Đặt trước sách trên Amazon (phát hành 31/12/2026):** [a.co/d/0jbHvq34](https://a.co/d/0jbHvq34)` → EN `**Pre-order the book on Amazon (out December 31, 2026):**`, ES `**Reserva el libro en Amazon (sale el 31 de diciembre de 2026):**`, same link.
 - Keep markdown italics/bold where the source has them.
 
 ## Output

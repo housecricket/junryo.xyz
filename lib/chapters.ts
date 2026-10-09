@@ -23,7 +23,7 @@ const PUBLISHED: Record<ReadLang, number[]> = {
   en: [1, 2, 3], // bản tiếng Anh chậm hơn tiếng Việt 1 chương
   es: [1, 2], // bản tiếng Tây Ban Nha chậm hơn tiếng Việt 2 chương
   ja: [1], // bản tiếng Nhật (ẩn): mới dịch chương 1
-  zh: [1], // bản tiếng Trung giản thể (ẩn): mới dịch chương 1
+  zh: [1, 2], // bản tiếng Trung giản thể (ẩn): đã dịch chương 1–2
 };
 
 /** File PDF trong public/pdf/ */
@@ -227,4 +227,29 @@ export function notebook(lang: ReadLang): NotebookEntry[] {
 /** Đường dẫn trang Sổ tay */
 export function notebookPath(lang: ReadLang) {
   return lang === "vi" ? "/so-tay/" : lang === "en" ? "/en/notebook/" : lang === "ja" ? "/ja/techo/" : lang === "zh" ? "/zh/biji/" : "/es/cuaderno/";
+}
+
+export type NoteItem = { text: string; note: string };
+export type ChapterArt = { src: string; alt: string };
+/** Cho trang câu trích: lời giải thích đi kèm từng câu trong sổ tay, tranh minh hoạ đầu tiên và đoạn mở đầu của chương */
+export function chapterExtras(lang: ReadLang, n: number): { notes: NoteItem[]; art: ChapterArt | null; opening: string; excerpt: string[] } {
+  const { body } = frontMatter(fs.readFileSync(path.join(dir(lang), `${n}.md`), "utf8"));
+  const parts = body.split(/\n## (?:Sổ tay của Thắng Tất|Thắng Tất’s Notebook|Cuaderno de Thắng Tất|タットの手帳|胜必的笔记本)\n/);
+  const nb = (parts[1] ?? "").split(/\n#{2,3} /)[0];
+  const notes = [...nb.matchAll(/^\d+\. \*\*(.+?)\*\*[ \t]*(.*)$/gm)].map((m) => ({ text: m[1], note: m[2] ? inline(m[2]) : "" }));
+  const img = body.match(/!\[([^\]]*)\]\((Minh_hoa_[^)]+)\)/);
+  const art = img ? { src: `${BASE_PATH}/illus/${img[2]}`, alt: img[1] } : null;
+  const story = parts[0]
+    .replace(/^# .+\n+/m, "")
+    .replace(/^[A-Z][a-z]{2} \d{1,2}, \d{4} · @\S+\n+/m, "");
+  const paras = story.split(/\n\s*\n/).map((b) => b.trim()).filter((b) => b && !/^(#|!\[|>|---)/.test(b));
+  const first = paras[0] ?? "";
+  // Trích đoạn: vài đoạn đầu chương, tối đa khoảng 700 ký tự
+  const ex: string[] = [];
+  for (const b of paras) {
+    if (ex.length && ex.join(" ").length + b.length > 700) break;
+    ex.push(b);
+    if (ex.length >= 3) break;
+  }
+  return { notes, art, opening: first ? inline(first) : "", excerpt: ex.map(inline) };
 }
