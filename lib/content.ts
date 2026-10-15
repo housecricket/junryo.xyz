@@ -6,6 +6,8 @@ export const LINKEDIN_URL = "https://www.linkedin.com/build-relation/newsletter-
 // Bản tiếng Nhật (/ja/) đang ẩn: không có cờ trong LangSwitcher, không nằm trong hreflang,
 // không tự chuyển theo múi giờ, mọi trang đều noindex. Người đọc Nhật theo dõi trên note và chia sẻ lên X.
 export const NOTE_URL = process.env.NEXT_PUBLIC_NOTE_URL || "https://note.com/dangtrunganh/m/me3f2ade9009d";
+/** Form gửi cảm nhận (Tally/Google Form). Để trống thì khối mời ở cuối chương không hiện. */
+export const FEEDBACK_URL = process.env.NEXT_PUBLIC_FEEDBACK_URL || "";
 
 // Bản tiếng Trung giản thể (/zh/) cũng đang ẩn, y như bản tiếng Nhật. LinkedIn không dùng được ở Trung Quốc đại lục:
 // người đọc theo dõi qua tài khoản công chúng WeChat (bài viết hoặc trang mã QR) khi đã có, chia sẻ lên Weibo.

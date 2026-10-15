@@ -1,3 +1,4 @@
+import FeedbackInvite from "./FeedbackInvite";
 import Link from "next/link";
 import { AMAZON_URL, JA_FOLLOW, NOTE_URL, WECHAT_URL, ZH_FOLLOW, content, followUrl, isHidden } from "@/lib/content";
 import { AVAILABLE, chapterPath, draftNumber, loadChapter, pdfUrl, type Chapter, type ReadLang } from "@/lib/chapters";
@@ -160,6 +161,7 @@ export default function ChapterReader({ lang, chapter }: { lang: ReadLang; chapt
       </header>
 
       <article className={`reader wrap${isDraft ? " is-draft" : ""}`} dangerouslySetInnerHTML={{ __html: chapter.html }} />
+      {!isDraft && <FeedbackInvite lang={lang} n={chapter.n} />}
 
       {isDraft && chapter.draft && (
         <div className="wrap tz-outer">
